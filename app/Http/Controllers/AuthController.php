@@ -33,4 +33,15 @@ class AuthController extends Controller
 
         return redirect($request->redirect_uri ?? '/login');
     }
+
+    public function logoutAll(Request $request)
+    {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        $redirectUri = $request->query('redirect_uri', '/');
+
+        return redirect($redirectUri);
+    }
 }

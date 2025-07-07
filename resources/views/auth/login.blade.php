@@ -56,7 +56,7 @@
         @enderror
 
         <div class="mt-6 text-center text-sm text-gray-500">
-            <p>Belum punya akun? <a href="#" class="text-indigo-600 hover:text-indigo-800 font-medium">Daftar disini</a></p>
+            <p>Lupa Password <a href="#" class="text-indigo-600 hover:text-indigo-800 font-medium"></a></p>
         </div>
     </div>
 </body>
