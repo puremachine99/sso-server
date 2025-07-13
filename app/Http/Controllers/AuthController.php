@@ -14,7 +14,7 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->only('email', 'password');
-
+        // status smartnakama (terminate, active, libur)
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
             return redirect()->intended(); // Laravel otomatis redirect ke tujuan awal jika ada
