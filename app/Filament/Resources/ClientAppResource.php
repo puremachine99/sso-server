@@ -72,13 +72,9 @@ class ClientAppResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')->label('Client ID')->copyable(),
                 Tables\Columns\TextColumn::make('name')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('id')->label('Client ID')->copyable(),
                 Tables\Columns\TextColumn::make('secret')->label('Client Secret')->copyable()->limit(10),
-                ImageColumn::make('clientSecret.icon_path') // ambil dari relasi
-                    ->label('Icon')
-                    ->disk('public')
-                    ->circular(),
                 Tables\Columns\TextColumn::make('redirect_uris')->limit(40)->label('Redirect URI'),
                 Tables\Columns\IconColumn::make('revoked')->boolean(),
                 Tables\Columns\TextColumn::make('created_at')->dateTime('d M Y'),
