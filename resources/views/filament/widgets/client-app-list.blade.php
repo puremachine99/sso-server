@@ -33,10 +33,10 @@
                                 <div class="mb-4 p-1 rounded-full bg-gradient-to-tr from-primary-400 to-primary-600">
                                     @if ($iconUrl)
                                         <img src="{{ $iconUrl }}" alt="{{ $app->name }} icon"
-                                            class="w-16 h-16 object-cover rounded-full border-2 border-white dark:border-gray-800 shadow-sm">
+                                            class="w-16 h-16 object-cover rounded-full border-1 border-white dark:border-gray-800 shadow-sm">
                                     @else
                                         <div
-                                            class="w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-700 border-2 border-white dark:border-gray-800 flex items-center justify-center text-primary-500">
+                                            class="w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-700 border-1 border-white dark:border-gray-800 flex items-center justify-center text-primary-500">
                                             <x-heroicon-o-cube class="w-6 h-6" />
                                         </div>
                                     @endif
