@@ -32,7 +32,6 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('dashboard')
-            ->login()
             ->profile()
             ->userMenuItems([
                 'profile' => MenuItem::make()
