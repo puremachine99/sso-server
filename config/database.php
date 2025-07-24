@@ -61,7 +61,23 @@ return [
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
         ],
-
+        'hcpm' => [
+            'driver' => 'mysql',
+            'host' => env('DB_HCPM_HOST', '127.0.0.1'),
+            'port' => env('DB_HCPM_PORT', '3306'),
+            'database' => env('DB_HCPM_DATABASE', 'perfomancemanagementdb'),
+            'username' => env('DB_HCPM_USERNAME', 'root'),
+            'password' => env('DB_HCPM_PASSWORD', ''),
+            'unix_socket' => env('DB_SOCKET', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'strict' => true,
+            'engine' => null,
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+            ]) : [],
+        ],
         'mariadb' => [
             'driver' => 'mariadb',
             'url' => env('DB_URL'),
@@ -147,7 +163,7 @@ return [
 
         'options' => [
             'cluster' => env('REDIS_CLUSTER', 'redis'),
-            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_database_'),
+            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_') . '_database_'),
             'persistent' => env('REDIS_PERSISTENT', false),
         ],
 

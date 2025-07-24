@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\testUserHcpm;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PasswordResetController;
@@ -20,3 +21,7 @@ Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLink'
 
 Route::get('/reset-password/{token}', [PasswordResetController::class, 'showResetForm'])->name('password.reset');
 Route::post('/reset-password', [PasswordResetController::class, 'resetPassword'])->name('password.update');
+
+
+//test
+Route::get('/test/hcpm-users', [testUserHcpm::class, 'index']);

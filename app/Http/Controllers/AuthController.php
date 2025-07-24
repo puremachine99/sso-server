@@ -1,9 +1,14 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
+use App\Models\User;
+use App\Models\HcpmUser;
 use App\Models\LoginLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash; // ✅ tambahkan ini
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -14,30 +19,50 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $credentials = $request->only('email', 'password');
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|string|min:6',
+        ]);
 
-        if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
+        // Ambil user dari database HCPM
+        $hcpmUser = HcpmUser::where('email', $request->email)->first();
 
-            $user = Auth::user(); // Ambil user setelah berhasil login
-
-            LoginLog::create([
-                'user_id' => $user->id,
-                'email' => $user->email,
-                'app_code' => 'portal',
-                'ip_address' => $request->ip(),
-                'user_agent' => $request->userAgent(),
-                'logged_in_at' => now(),
-                'login_type' => 'manual',
+        // ✅ CEK PASSWORDNYA
+        if (!$hcpmUser || !Hash::check($request->password, $hcpmUser->password)) {
+            return back()->withErrors([
+                'email' => 'Login gagal. Cek email dan password.',
             ]);
-
-
-            return redirect()->intended();
         }
 
-        return back()->withErrors([
-            'email' => 'Login gagal. Cek email dan password.',
+        // ✅ Sync user ke database lokal portal
+        $user = User::firstOrCreate(
+            ['email' => $hcpmUser->email],
+            [
+                'name' => $hcpmUser->name,
+                'username' => $hcpmUser->username ?? null,
+                'role' => $hcpmUser->role,
+                'department_id' => $hcpmUser->department_id,
+                // simpan password random karena gak dipakai login lokal
+                'password' => bcrypt(Str::random(40)),
+            ]
+        );
+
+        // ✅ Login user lokal ke sistem Auth Laravel
+        Auth::login($user);
+        $request->session()->regenerate();
+
+        // ✅ Catat login ke LoginLog
+        LoginLog::create([
+            'user_id' => $user->id,
+            'email' => $user->email,
+            'app_code' => 'portal',
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+            'logged_in_at' => now(),
+            'login_type' => 'sso-db', // beda dari manual
         ]);
+
+        return redirect()->intended();
     }
 
 

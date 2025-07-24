@@ -9,6 +9,8 @@ class LoginLog extends Model
 {
     use HasFactory;
 
+    protected $table = 'login_logs'; // Optional kalau default
+
     protected $fillable = [
         'user_id',
         'email',
@@ -17,15 +19,20 @@ class LoginLog extends Model
         'user_agent',
         'logged_in_at',
         'login_type',
-
     ];
 
     protected $casts = [
         'logged_in_at' => 'datetime',
     ];
 
+    // Optional: casting ke lowercase / uppercase otomatis
+    // protected $attributes = [
+    //     'app_code' => 'portal',
+    //     'login_type' => 'sso',
+    // ];
+
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class)->withDefault(); // avoid null user
     }
 }
