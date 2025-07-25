@@ -20,6 +20,10 @@ class ClientSecret extends Model
     protected $casts = [
         'client_id' => 'string',
     ];
+    public function clientSecret()
+    {
+        return $this->hasOne(\App\Models\ClientSecret::class, 'client_id', 'id');
+    }
 
     public function client()
     {

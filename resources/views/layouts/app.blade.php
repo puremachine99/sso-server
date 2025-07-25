@@ -36,6 +36,7 @@
         body::-webkit-scrollbar {
             display: none;
         }
+
         body {
             -ms-overflow-style: none;
             scrollbar-width: none;
@@ -57,6 +58,7 @@
     </div>
 
     @stack('scripts')
+
 </body>
 
 </html>

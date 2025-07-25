@@ -6,9 +6,21 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PasswordResetController;
 use Illuminate\Support\Facades\Mail;
 
+
+// Redirect '/' ke login jika belum login, atau ke dashboard jika sudah login
 Route::get('/', function () {
-    return view('welcome');
+    return Auth::check()
+        ? redirect('/dashboard') // ganti sesuai nama dashboard route kamu
+        : redirect('/admin/login');
 });
+
+// Override Filament login route
+Route::get('/login', function () {
+    return Auth::check()
+        ? redirect('/dashboard') // jika sudah login, lempar ke dashboard
+        : redirect('/admin/login');     // jika belum, redirect ke login custom
+});
+
 //overide filament login route 
 Route::get('/login', fn() => redirect('/admin/login'));
 Route::get('/admin/login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -24,4 +36,4 @@ Route::post('/reset-password', [PasswordResetController::class, 'resetPassword']
 
 
 //test
-Route::get('/test/hcpm-users', [testUserHcpm::class, 'index']);
+// Route::get('/test/hcpm-users', [testUserHcpm::class, 'index']);
