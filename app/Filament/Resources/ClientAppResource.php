@@ -87,12 +87,13 @@ class ClientAppResource extends Resource
                     ->label('ENV')
                     ->icon('heroicon-o-document-text')
                     ->modalHeading('Salin Konfigurasi .env Client')
-                    ->modalSubmitAction(false) // tidak ada tombol submit
-                    ->modalCancelActionLabel('Tutup')
+                    ->modalSubmitAction(false) // tanpa tombol submit
+                    ->modalCancelAction(false)
                     ->modalContent(fn($record) => view('components.env-preview', [
                         'client' => $record,
                     ]))
                     ->color('gray'),
+
                 Tables\Actions\DeleteAction::make()
                     ->before(function ($record) {
                         $secret = \App\Models\ClientSecret::find($record->id);
