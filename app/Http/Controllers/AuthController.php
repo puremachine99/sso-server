@@ -26,21 +26,21 @@ class AuthController extends Controller
         ]);
 
         // Ambil user dari database HCPM
-        $hcpmUser = HcpmUser::where('email', $request->email)->first();
+        $hcpmUser = HcpmUser::with('jobDetail')->where('email', $request->email)->first();
 
-        // ✅ Cek apakah user ditemukan dan password cocok
         if (!$hcpmUser || !Hash::check($request->password, $hcpmUser->password)) {
             return back()->withErrors([
                 'email' => 'Login gagal. Cek email dan password.',
             ]);
         }
 
-        // ✅ Cek status user HCPM (hanya boleh login jika tidak Terminated)
-        if (method_exists($hcpmUser, 'status') && $hcpmUser->status() === 'Terminated') {
+        if ($hcpmUser->status !== 'Active') {
             return back()->withErrors([
-                'email' => 'Akun Anda telah di-nonaktifkan dan tidak dapat login.',
+                'email' => 'Akun Anda tidak aktif. Hanya karyawan berstatus Active yang dapat login.',
             ]);
         }
+
+
 
         // ✅ Sync user ke database lokal portal
         $user = User::firstOrCreate(
