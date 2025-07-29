@@ -95,7 +95,7 @@ class HcpmUser extends Model
     }
     public function jobTitles()
     {
-        return $this->belongsToMany(JobTitle::class, 'user_job_titles', 'user_id', 'job_title_id')
+        return $this->belongsToMany(JobTitle::class, 'user_job_title', 'user_id', 'job_title_id')
             ->withTimestamps();
     }
 
