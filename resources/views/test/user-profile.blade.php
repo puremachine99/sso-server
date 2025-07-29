@@ -40,7 +40,7 @@
                 <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
                     ID: {{ $user->username }}
                 </span>
-                <a href="{{ url('/hcpm-users') }}" class="flex items-center text-blue-600 hover:text-blue-800">
+                <a href="{{ url('/test/hcpm-users') }}" class="flex items-center text-blue-600 hover:text-blue-800">
                     <i class="fas fa-arrow-left mr-2"></i> Kembali ke Daftar
                 </a>
             </div>

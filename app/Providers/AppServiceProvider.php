@@ -2,8 +2,9 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
 use Laravel\Passport\Passport;
+use Illuminate\Routing\UrlGenerator;
+use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -18,20 +19,17 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot(): void
+    public function boot(UrlGenerator $url): void
     {
-        // Gunakan view Blade standar untuk halaman authorize
-        Passport::authorizationView('oauth.authorize');
+        // Force HTTPS only in non-local environments
+        if (env('APP_ENV') !== 'local') {
+            $url->forceScheme('https');
+        }
 
-        // Atur masa berlaku token jika diperlukan
+        // Existing Passport setup – do not remove
+        Passport::authorizationView('oauth.authorize');
         Passport::tokensExpireIn(now()->addDays(15));
         Passport::refreshTokensExpireIn(now()->addDays(30));
         Passport::personalAccessTokensExpireIn(now()->addMonths(6));
-
-        // (Opsional) Scope kustom, bisa kamu aktifkan nanti
-        // Passport::tokensCan([
-        //     'view-profile' => 'View your profile',
-        //     'edit-settings' => 'Edit your account settings',
-        // ]);
     }
 }
