@@ -17,7 +17,7 @@ class testUserHcpm extends Controller
         $user = HcpmUser::with([
             'jobDetail',
             'smartnakamaProfile',
-            'salaryDetails',             // ✅ BUKAN salaryDetail
+            'salaryDetails',
             'terminationDetails',
             'contactDetails',
             'emergencyDetails',

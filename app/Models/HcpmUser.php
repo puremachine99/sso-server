@@ -33,6 +33,11 @@ class HcpmUser extends Model
     {
         return $this->hasOne(JobDetail::class, 'user_id');
     }
+    public function isActive(): bool
+    {
+        return $this->terminationDetails->isEmpty();
+    }
+
 
     public function userJobTitles()
     {
