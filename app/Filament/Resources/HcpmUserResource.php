@@ -59,25 +59,25 @@ class HcpmUserResource extends Resource
                     ->label('Jabatan Struktural')
                     ->getStateUsing(
                         fn($record) =>
-                            $record->jobTitles->firstWhere('jenis_jabatan', 'Struktural')?->job_title ?? '—'
+                        $record->jobTitles->firstWhere('jenis_jabatan', 'Struktural')?->job_title ?? '—'
                     ),
 
                 Tables\Columns\TextColumn::make('jobTitlesFungsional')
                     ->label('Jabatan Fungsional')
                     ->getStateUsing(
                         fn($record) =>
-                            $record->jobTitles->firstWhere('jenis_jabatan', 'Fungsional')?->job_title ?? '—'
+                        $record->jobTitles->firstWhere('jenis_jabatan', 'Fungsional')?->job_title ?? '—'
                     ),
             ])
             ->defaultSort('name')
             ->filters([])
             ->actions([
-                Tables\Actions\ViewAction::make(),
+
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // Tables\Actions\BulkActionGroup::make([
+                //     Tables\Actions\DeleteBulkAction::make(),
+                // ]),
             ]);
     }
 
@@ -90,8 +90,8 @@ class HcpmUserResource extends Resource
     {
         return [
             'index' => Pages\ListHcpmUsers::route('/'),
-            'create' => Pages\CreateHcpmUser::route('/create'),
-            'edit' => Pages\EditHcpmUser::route('/{record}/edit'),
+            // 'create' => Pages\CreateHcpmUser::route('/create'),
+            // 'edit' => Pages\EditHcpmUser::route('/{record}/edit'),
         ];
     }
 }

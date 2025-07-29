@@ -21,10 +21,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(UrlGenerator $url): void
     {
-        // Force HTTPS only in non-local environments
-        if (env('APP_ENV') !== 'local') {
-            $url->forceScheme('https');
-        }
+        // ngilangin mixedcontent di filament kwkwkw
+        // if (env('APP_ENV') !== 'local') {
+        //     $url->forceScheme('https');
+        // }
 
         // Existing Passport setup – do not remove
         Passport::authorizationView('oauth.authorize');
