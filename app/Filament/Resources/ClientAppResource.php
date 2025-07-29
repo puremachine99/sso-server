@@ -95,6 +95,7 @@ class ClientAppResource extends Resource
                     ->color('gray'),
 
                 Tables\Actions\DeleteAction::make()
+                    ->visible(fn() => auth()->user()?->hasRole('super_admin'))
                     ->before(function ($record) {
                         $secret = \App\Models\ClientSecret::find($record->id);
                         if ($secret) {
