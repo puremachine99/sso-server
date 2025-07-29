@@ -23,7 +23,7 @@ class HcpmUser extends Model
         'email_verified_at' => 'datetime',
         'permissions' => 'array',
     ];
-
+    // === Relasi detail info users ===
     public function smartnakamaProfile()
     {
         return $this->hasOne(SmartnakamaProfile::class, 'user_id');
@@ -33,11 +33,6 @@ class HcpmUser extends Model
     {
         return $this->hasOne(JobDetail::class, 'user_id');
     }
-    public function isActive(): bool
-    {
-        return $this->terminationDetails->isEmpty();
-    }
-
 
     public function userJobTitles()
     {
@@ -93,4 +88,36 @@ class HcpmUser extends Model
     {
         return $this->hasMany(Certification::class, 'user_id');
     }
+    // === Relasi Umum ===
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
+    }
+
+    public function jobTitles()
+{
+    return $this->belongsToMany(JobTitle::class, 'user_job_titles', 'user_id', 'job_title_id')
+        ->withTimestamps();
+}
+
+public function strukturalTitle()
+{
+    return $this->belongsToMany(JobTitle::class, 'user_job_titles', 'user_id', 'job_title_id')
+        ->where('jenis_jabatan', 'Struktural')
+        ->limit(1);
+}
+
+public function fungsionalTitle()
+{
+    return $this->belongsToMany(JobTitle::class, 'user_job_titles', 'user_id', 'job_title_id')
+        ->where('jenis_jabatan', 'Fungsional')
+        ->limit(1);
+}
+
+
+    public function isActive(): bool
+    {
+        return $this->terminationDetails->isEmpty();
+    }
+
 }
