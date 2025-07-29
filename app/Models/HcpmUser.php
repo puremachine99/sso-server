@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -23,6 +24,9 @@ class HcpmUser extends Model
         'email_verified_at' => 'datetime',
         'permissions' => 'array',
     ];
+
+    protected $appends = ['status']; // supaya bisa diakses via ->status (juga di Filament column)
+
     // === Relasi detail info users ===
     public function smartnakamaProfile()
     {
@@ -88,11 +92,13 @@ class HcpmUser extends Model
     {
         return $this->hasMany(Certification::class, 'user_id');
     }
+
     // === Relasi Umum ===
     public function department()
     {
-        return $this->belongsTo(Department::class);
+        return $this->belongsTo(Department::class, 'department_id');
     }
+
     public function jobTitles()
     {
         return $this->belongsToMany(JobTitle::class, 'user_job_title', 'user_id', 'job_title_id')
@@ -113,20 +119,22 @@ class HcpmUser extends Model
             ->limit(1);
     }
 
+    // === Status Aktif atau Tidak ===
     public function isActive(): bool
     {
         return $this->terminationDetails->isEmpty();
     }
-    public function status(): string
+
+    public function getStatusAttribute(): string
     {
         if ($this->terminationDetails->isEmpty()) {
             return 'Active';
         }
 
-        $latestTermination = $this->terminationDetails->sortByDesc('created_at')->first();
+        $latest = $this->terminationDetails->sortByDesc('created_at')->first();
 
-        return match (strtolower($latestTermination->status)) {
-            'on_leave' => 'On Leave',
+        return match (strtolower($latest->status)) {
+            'on_leave' => 'On_Leave',
             'terminated' => 'Terminated',
             default => 'Terminated',
         };

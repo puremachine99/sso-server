@@ -20,9 +20,7 @@ class HcpmUserResource extends Resource
 
     public static function form(Form $form): Form
     {
-        return $form->schema([
-            // Biarkan kosong untuk sekarang jika hanya view
-        ]);
+        return $form->schema([]);
     }
 
     public static function table(Table $table): Table
@@ -49,29 +47,26 @@ class HcpmUserResource extends Resource
 
                 Tables\Columns\BadgeColumn::make('status')
                     ->label('Status')
-                    ->getStateUsing(fn($record) => $record->status())
                     ->color(fn($state) => match ($state) {
                         'Active' => 'success',
                         'On_Leave' => 'warning',
                         'Terminated' => 'danger',
                         default => 'gray',
                     })
-                    ->sortable()
-                    ->searchable(),
+                    ->sortable(),
 
-
-                Tables\Columns\TextColumn::make('jobTitles')
+                Tables\Columns\TextColumn::make('jobTitlesStruktural')
                     ->label('Jabatan Struktural')
                     ->getStateUsing(
                         fn($record) =>
-                        $record->jobTitles->firstWhere('jenis_jabatan', 'Struktural')?->job_title ?? '—'
+                            $record->jobTitles->firstWhere('jenis_jabatan', 'Struktural')?->job_title ?? '—'
                     ),
 
-                Tables\Columns\TextColumn::make('jobTitles')
+                Tables\Columns\TextColumn::make('jobTitlesFungsional')
                     ->label('Jabatan Fungsional')
                     ->getStateUsing(
                         fn($record) =>
-                        $record->jobTitles->firstWhere('jenis_jabatan', 'Fungsional')?->job_title ?? '—'
+                            $record->jobTitles->firstWhere('jenis_jabatan', 'Fungsional')?->job_title ?? '—'
                     ),
             ])
             ->defaultSort('name')
@@ -86,12 +81,9 @@ class HcpmUserResource extends Resource
             ]);
     }
 
-
     public static function getRelations(): array
     {
-        return [
-            // Tambahkan relation managers jika perlu nanti
-        ];
+        return [];
     }
 
     public static function getPages(): array
