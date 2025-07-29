@@ -14,10 +14,13 @@ class HcpmUserResource extends Resource
     protected static ?string $model = HcpmUser::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
-    protected static ?string $navigationGroup = 'HCPM';
+    protected static ?string $navigationGroup = 'User Management';
     protected static ?string $label = 'User HCPM';
     protected static ?string $navigationLabel = 'User HCPM';
-
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
     public static function form(Form $form): Form
     {
         return $form->schema([]);

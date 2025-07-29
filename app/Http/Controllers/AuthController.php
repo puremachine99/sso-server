@@ -40,8 +40,6 @@ class AuthController extends Controller
             ]);
         }
 
-
-
         // ✅ Sync user ke database lokal portal
         $user = User::firstOrCreate(
             ['email' => $hcpmUser->email],
