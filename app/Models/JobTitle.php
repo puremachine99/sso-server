@@ -10,7 +10,8 @@ class JobTitle extends Model
     protected $table = 'job_titles';
 
     protected $fillable = [
-        'job_title', 'jenis_jabatan', // sesuai kolom yang kamu pakai
+        'job_title',
+        'jenis_jabatan', // sesuai kolom yang kamu pakai
     ];
 
     public function users()
@@ -18,4 +19,5 @@ class JobTitle extends Model
         return $this->belongsToMany(HcpmUser::class, 'user_job_title', 'job_title_id', 'user_id')
             ->withTimestamps();
     }
+
 }

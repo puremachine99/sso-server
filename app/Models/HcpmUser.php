@@ -93,31 +93,42 @@ class HcpmUser extends Model
     {
         return $this->belongsTo(Department::class);
     }
-
     public function jobTitles()
-{
-    return $this->belongsToMany(JobTitle::class, 'user_job_titles', 'user_id', 'job_title_id')
-        ->withTimestamps();
-}
+    {
+        return $this->belongsToMany(JobTitle::class, 'user_job_titles', 'user_id', 'job_title_id')
+            ->withTimestamps();
+    }
 
-public function strukturalTitle()
-{
-    return $this->belongsToMany(JobTitle::class, 'user_job_titles', 'user_id', 'job_title_id')
-        ->where('jenis_jabatan', 'Struktural')
-        ->limit(1);
-}
+    public function strukturalTitle()
+    {
+        return $this->jobTitles()
+            ->where('jenis_jabatan', 'Struktural')
+            ->limit(1);
+    }
 
-public function fungsionalTitle()
-{
-    return $this->belongsToMany(JobTitle::class, 'user_job_titles', 'user_id', 'job_title_id')
-        ->where('jenis_jabatan', 'Fungsional')
-        ->limit(1);
-}
-
+    public function fungsionalTitle()
+    {
+        return $this->jobTitles()
+            ->where('jenis_jabatan', 'Fungsional')
+            ->limit(1);
+    }
 
     public function isActive(): bool
     {
         return $this->terminationDetails->isEmpty();
     }
+    public function status(): string
+    {
+        if ($this->terminationDetails->isEmpty()) {
+            return 'Active';
+        }
 
+        $latestTermination = $this->terminationDetails->sortByDesc('created_at')->first();
+
+        return match (strtolower($latestTermination->status)) {
+            'on_leave' => 'On Leave',
+            'terminated' => 'Terminated',
+            default => 'Terminated',
+        };
+    }
 }

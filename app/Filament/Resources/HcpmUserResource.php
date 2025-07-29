@@ -29,32 +29,50 @@ class HcpmUserResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')->label('Nama')->searchable()->sortable(),
-                Tables\Columns\TextColumn::make('email')->label('Email')->searchable()->sortable(),
-                Tables\Columns\TextColumn::make('role')->label('Role')->sortable(),
+                Tables\Columns\TextColumn::make('name')
+                    ->label('Nama')
+                    ->searchable()
+                    ->sortable(),
 
-                Tables\Columns\TextColumn::make('department_id')
+                Tables\Columns\TextColumn::make('email')
+                    ->label('Email')
+                    ->searchable()
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('role')
+                    ->label('Role')
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('department.name')
                     ->label('Departemen')
-                    ->formatStateUsing(fn($state) => $state ?? 'N/A'),
+                    ->default('N/A'),
 
-                Tables\Columns\TextColumn::make('Struktural Jabatan')
+                Tables\Columns\BadgeColumn::make('status')
+                    ->label('Status')
+                    ->getStateUsing(fn($record) => $record->status())
+                    ->color(fn($state) => match ($state) {
+                        'Active' => 'success',
+                        'On_Leave' => 'warning',
+                        'Terminated' => 'danger',
+                        default => 'gray',
+                    })
+                    ->sortable()
+                    ->searchable(),
+
+
+                Tables\Columns\TextColumn::make('jobTitles')
                     ->label('Jabatan Struktural')
                     ->getStateUsing(
                         fn($record) =>
-                        $record->jobTitles->firstWhere('jenis_jabatan', 'Struktural')?->job_titles ?? '—'
+                        $record->jobTitles->firstWhere('jenis_jabatan', 'Struktural')?->job_title ?? '—'
                     ),
 
-                Tables\Columns\TextColumn::make('Fungsional Jabatan')
+                Tables\Columns\TextColumn::make('jobTitles')
                     ->label('Jabatan Fungsional')
                     ->getStateUsing(
                         fn($record) =>
-                        $record->jobTitles->firstWhere('jenis_jabatan', 'Fungsional')?->job_titless ?? '—'
+                        $record->jobTitles->firstWhere('jenis_jabatan', 'Fungsional')?->job_title ?? '—'
                     ),
-
-
-                Tables\Columns\TextColumn::make('fungsionalTitle.job_titles')
-                    ->label('Jabatan Fungsional')
-                    ->formatStateUsing(fn($state) => optional($state->first())->job_titles ?? '—'),
             ])
             ->defaultSort('name')
             ->filters([])
@@ -67,6 +85,7 @@ class HcpmUserResource extends Resource
                 ]),
             ]);
     }
+
 
     public static function getRelations(): array
     {
