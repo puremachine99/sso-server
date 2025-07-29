@@ -12,4 +12,23 @@ class testUserHcpm extends Controller
         $users = HcpmUser::all(); // Tarik semua user dari DB HCPM
         return view('test.hcpm-users', compact('users'));
     }
+    public function show($id)
+    {
+        $user = HcpmUser::with([
+            'jobDetail',
+            'smartnakamaProfile',
+            'salaryDetails',             // ✅ BUKAN salaryDetail
+            'terminationDetails',
+            'contactDetails',
+            'emergencyDetails',
+            'personalDetails',
+            'educationBackgrounds',
+            'careerExperiences',
+            'competencySpecifications',
+            'certifications',
+        ])->findOrFail($id);
+
+
+        return view('test.user-profile', compact('user'));
+    }
 }

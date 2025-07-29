@@ -23,6 +23,7 @@ Route::get('/login', function () {
 
 //overide filament login route 
 Route::get('/login', fn() => redirect('/admin/login'));
+Route::get('/dashboard/login', fn() => redirect('/admin/login'));
 Route::get('/admin/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1'); // 5 attempts per minute
 Route::get('/logout', [AuthController::class, 'logout']);
@@ -36,4 +37,5 @@ Route::post('/reset-password', [PasswordResetController::class, 'resetPassword']
 
 
 //test
-// Route::get('/test/hcpm-users', [testUserHcpm::class, 'index']);
+Route::get('/test/hcpm-users', [testUserHcpm::class, 'index']);
+Route::get('/user/{id}', [testUserHcpm::class, 'show'])->name('user.show');
