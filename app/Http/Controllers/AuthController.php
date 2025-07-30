@@ -25,8 +25,28 @@ class AuthController extends Controller
             'password' => 'required|string|min:6',
         ]);
 
-        // Ambil user dari database HCPM
-        $hcpmUser = HcpmUser::with('jobDetail')->where('email', $request->email)->first();
+        // ✅ 1. Cek apakah user ada di database PORTAL
+        $user = \App\Models\User::where('email', $request->email)->first();
+
+        if ($user && Hash::check($request->password, $user->password)) {
+            Auth::login($user);
+            $request->session()->regenerate();
+
+            LoginLog::create([
+                'user_id' => $user->id,
+                'email' => $user->email,
+                'app_code' => 'portal',
+                'ip_address' => $request->ip(),
+                'user_agent' => $request->userAgent(),
+                'logged_in_at' => now(),
+                'login_type' => 'local-db',
+            ]);
+
+            return redirect()->intended();
+        }
+
+        // ✅ 2. Jika tidak ditemukan, coba cek user di database HCPM
+        $hcpmUser = \App\Models\HcpmUser::with('jobDetail')->where('email', $request->email)->first();
 
         if (!$hcpmUser || !Hash::check($request->password, $hcpmUser->password)) {
             return back()->withErrors([
@@ -40,7 +60,19 @@ class AuthController extends Controller
             ]);
         }
 
-        // ✅ Sync user ke database lokal portal
+        // ✅ 3. Jika dari HCPM valid, login pakai akun temporary (tanpa simpan di portal.users)
+        $tempUser = new \App\Models\User([
+            'name' => $hcpmUser->name,
+            'email' => $hcpmUser->email,
+            'username' => $hcpmUser->username ?? null,
+            'role' => $hcpmUser->role ?? 'employee',
+            'department_id' => $hcpmUser->department_id,
+        ]);
+        $tempUser->id = -1; // set fake ID agar tidak bentrok di relasi
+        Auth::login($tempUser);
+
+        // (OPSIONAL) Kalau mau simpan ke portal.users, uncomment ini
+        /*
         $user = User::firstOrCreate(
             ['email' => $hcpmUser->email],
             [
@@ -51,15 +83,12 @@ class AuthController extends Controller
                 'password' => bcrypt(Str::random(40)),
             ]
         );
-
-        // ✅ Login user lokal ke sistem Auth Laravel
         Auth::login($user);
-        $request->session()->regenerate();
+        */
 
-        // ✅ Catat login ke LoginLog
         LoginLog::create([
-            'user_id' => $user->id,
-            'email' => $user->email,
+            'user_id' => null, // karena bukan user portal
+            'email' => $hcpmUser->email,
             'app_code' => 'portal',
             'ip_address' => $request->ip(),
             'user_agent' => $request->userAgent(),
@@ -69,6 +98,7 @@ class AuthController extends Controller
 
         return redirect()->intended();
     }
+
 
     public function logout(Request $request)
     {

@@ -10,11 +10,17 @@ class ListUsers extends ListRecords
 {
     protected static string $resource = UserResource::class;
 
+    // Tampilkan header action seperti "Create"
     protected function getHeaderActions(): array
     {
-        return [];
+        return [
+            \Filament\Pages\Actions\CreateAction::make(),
+        ];
     }
-    protected function canCreate(): bool   {
-        return false;
+
+    // Aktifkan create (default-nya true, jadi sebenarnya ini opsional)
+    protected function canCreate(): bool
+    {
+        return true;
     }
 }
