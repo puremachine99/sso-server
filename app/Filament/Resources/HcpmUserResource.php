@@ -89,14 +89,14 @@ class HcpmUserResource extends Resource
                     ->label('Departemen')
                     ->relationship('department', 'name')
                     ->searchable(),
-                SelectFilter::make('job_titles_struktural')
-                    ->label('Jabatan Struktural')
-                    ->relationship('jobTitles', 'job_title')
-                    ->searchable(),
-                SelectFilter::make('job_titles_fungsional')
-                    ->label('Jabatan Fungsional')
-                    ->relationship('jobTitles', 'job_title')
-                    ->searchable(),
+                // SelectFilter::make('job_titles_struktural')
+                //     ->label('Jabatan Struktural')
+                //     ->relationship('jobTitles', 'job_title')
+                //     ->searchable(),
+                // SelectFilter::make('job_titles_fungsional')
+                //     ->label('Jabatan Fungsional')
+                //     ->relationship('jobTitles', 'job_title')
+                //     ->searchable(),
 
             ])
             ->actions([
