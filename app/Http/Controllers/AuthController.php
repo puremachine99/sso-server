@@ -18,7 +18,6 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
-
     public function login(Request $request)
     {
         $request->validate([
@@ -26,15 +25,13 @@ class AuthController extends Controller
             'password' => 'required|string|min:6',
         ]);
 
-        $credentials = $request->only('email', 'password');
+        // 1️⃣ Cek portal.users terlebih dahulu
+        $user = User::where('email', $request->email)->first();
 
-        // ✅ 1. Coba login ke portal.users (Auth default)
-        if (Auth::attempt($credentials)) {
+        if ($user && Hash::check($request->password, $user->password)) {
+            Auth::login($user);
             $request->session()->regenerate();
 
-            $user = Auth::user(); // Ambil user yang login
-
-            // ⏺️ Logging
             LoginLog::create([
                 'user_id' => $user->id,
                 'email' => $user->email,
@@ -42,14 +39,13 @@ class AuthController extends Controller
                 'ip_address' => $request->ip(),
                 'user_agent' => $request->userAgent(),
                 'logged_in_at' => now(),
-                'login_type' => 'manual',
+                'login_type' => $user->source ?? 'manual',
             ]);
 
             return redirect()->intended();
         }
 
-        // ✅ 2. Kalau gagal, cek ke HCPM database
-        /** ⛔ START: Login ke database HCPM */
+        // 2️⃣ Jika tidak ada di portal, cek ke database HCPM
         $hcpmUser = HcpmUser::with('jobDetail')->where('email', $request->email)->first();
 
         if (!$hcpmUser || !Hash::check($request->password, $hcpmUser->password)) {
@@ -60,11 +56,11 @@ class AuthController extends Controller
 
         if (optional($hcpmUser->jobDetail)->employee_status !== 'Active') {
             return back()->withErrors([
-                'email' => 'Akun Anda tidak aktif di sistem HCPM.',
+                'email' => 'Akun Anda tidak aktif. Hanya karyawan Active yang bisa login.',
             ]);
         }
 
-        // Simpan user ke portal untuk bisa pakai Auth Laravel
+        // 3️⃣ Sinkronkan user ke portal.users, tandai sebagai SSO
         $user = User::firstOrCreate(
             ['email' => $hcpmUser->email],
             [
@@ -72,15 +68,14 @@ class AuthController extends Controller
                 'username' => $hcpmUser->username ?? null,
                 'role' => $hcpmUser->role ?? 'employee',
                 'department_id' => $hcpmUser->department_id,
-                'password' => bcrypt($request->password), // agar bisa login ulang
+                'password' => bcrypt(Str::random(40)), // Dummy password
+                'source' => 'sso', // ✅ penanda akun SSO
             ]
         );
-        /** ⛔ END: Login ke database HCPM */
 
         Auth::login($user);
         $request->session()->regenerate();
 
-        // ⏺️ Logging
         LoginLog::create([
             'user_id' => $user->id,
             'email' => $user->email,
@@ -93,8 +88,6 @@ class AuthController extends Controller
 
         return redirect()->intended();
     }
-
-
 
     public function logout(Request $request)
     {
