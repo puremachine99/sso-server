@@ -25,8 +25,8 @@ class AuthController extends Controller
             'password' => 'required|string|min:6',
         ]);
 
-        // ✅ 1. Cek apakah user ada di database PORTAL
-        $user = \App\Models\User::where('email', $request->email)->first();
+        // ✅ 1. Cek di portal.users dulu
+        $user = User::where('email', $request->email)->first();
 
         if ($user && Hash::check($request->password, $user->password)) {
             Auth::login($user);
@@ -45,8 +45,8 @@ class AuthController extends Controller
             return redirect()->intended();
         }
 
-        // ✅ 2. Jika tidak ditemukan, coba cek user di database HCPM
-        $hcpmUser = \App\Models\HcpmUser::with('jobDetail')->where('email', $request->email)->first();
+        // ✅ 2. Kalau tidak ada di portal, cek ke HCPM
+        $hcpmUser = HcpmUser::with('jobDetail')->where('email', $request->email)->first();
 
         if (!$hcpmUser || !Hash::check($request->password, $hcpmUser->password)) {
             return back()->withErrors([
@@ -54,23 +54,27 @@ class AuthController extends Controller
             ]);
         }
 
-        if ($hcpmUser->status !== 'Active') {
+        // Cek status karyawan dari HCPM
+        if (optional($hcpmUser->jobDetail)->employee_status !== 'Active') {
             return back()->withErrors([
-                'email' => 'Akun Anda tidak aktif. Hanya karyawan berstatus Active yang dapat login.',
+                'email' => 'Akun Anda tidak aktif. Hanya karyawan Active yang bisa login.',
             ]);
         }
 
-        // ✅ 3. Jika dari HCPM valid, login pakai akun temporary (tanpa simpan di portal.users)
-        $tempUser = new \App\Models\User([
-            'name' => $hcpmUser->name,
-            'email' => $hcpmUser->email,
-            'username' => $hcpmUser->username ?? null,
-            'role' => $hcpmUser->role ?? 'employee',
-            'department_id' => $hcpmUser->department_id,
-        ]);
-        $tempUser->id = -1; // set fake ID agar tidak bentrok di relasi
-        Auth::login($tempUser);
+        // ✅ 3. Login ke sistem sebagai user sementara atau simpan ke portal.users
+        $user = User::firstOrCreate(
+            ['email' => $hcpmUser->email],
+            [
+                'name' => $hcpmUser->name,
+                'username' => $hcpmUser->username ?? null,
+                'role' => $hcpmUser->role ?? 'employee',
+                'department_id' => $hcpmUser->department_id,
+                'password' => bcrypt(Str::random(40)), // dummy karena gak dipakai
+            ]
+        );
 
+        Auth::login($user);
+        $request->session()->regenerate();
         // (OPSIONAL) Kalau mau simpan ke portal.users, uncomment ini
         /*
         $user = User::firstOrCreate(
@@ -85,10 +89,9 @@ class AuthController extends Controller
         );
         Auth::login($user);
         */
-
         LoginLog::create([
-            'user_id' => null, // karena bukan user portal
-            'email' => $hcpmUser->email,
+            'user_id' => $user->id,
+            'email' => $user->email,
             'app_code' => 'portal',
             'ip_address' => $request->ip(),
             'user_agent' => $request->userAgent(),
