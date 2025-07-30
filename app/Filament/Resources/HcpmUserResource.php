@@ -35,7 +35,7 @@ class HcpmUserResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->query(fn () => HcpmUser::query()->with(['department', 'jobTitles', 'terminationDetails']))
+            ->query(fn() => HcpmUser::query()->with(['department', 'jobTitles', 'terminationDetails']))
             ->columns([
                 TextColumn::make('name')
                     ->label('Nama')
@@ -84,19 +84,22 @@ class HcpmUserResource extends Resource
                         'On_Leave' => 'On Leave',
                         'Terminated' => 'Terminated',
                     ])
-                    ->apply(function (Builder $query, $value) {
-                        if ($value === 'Active') {
-                            return $query->whereDoesntHave('terminationDetails');
-                        }
-
-                        return $query->whereHas('terminationDetails', fn ($q) =>
-                            $q->where('status', strtolower($value))
-                        );
+                    ->query(function (Builder $query, string $value): Builder {
+                        return match ($value) {
+                            'Active' => $query->whereDoesntHave('terminationDetails'),
+                            'On_Leave', 'Terminated' => $query->whereHas(
+                                'terminationDetails',
+                                fn($q) =>
+                                $q->where('status', strtolower($value))
+                            ),
+                            default => $query,
+                        };
                     }),
+
 
                 SelectFilter::make('role')
                     ->label('Role')
-                    ->options(fn () => HcpmUser::query()->distinct()->pluck('role', 'role')->filter()),
+                    ->options(fn() => HcpmUser::query()->distinct()->pluck('role', 'role')->filter()),
 
                 SelectFilter::make('department_id')
                     ->label('Departemen')
