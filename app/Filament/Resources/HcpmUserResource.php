@@ -84,17 +84,16 @@ class HcpmUserResource extends Resource
                         'On_Leave' => 'On Leave',
                         'Terminated' => 'Terminated',
                     ])
-                    ->query(function (Builder $query, string $value): Builder {
-                        return match ($value) {
-                            'Active' => $query->whereDoesntHave('terminationDetails'),
-                            'On_Leave', 'Terminated' => $query->whereHas(
-                                'terminationDetails',
-                                fn($q) =>
-                                $q->where('status', strtolower($value))
-                            ),
-                            default => $query,
-                        };
+                    ->apply(fn(Builder $query, $value) => match ($value) {
+                        'Active' => $query->whereDoesntHave('terminationDetails'),
+                        'On_Leave', 'Terminated' => $query->whereHas(
+                            'terminationDetails',
+                            fn($q) =>
+                            $q->where('status', strtolower($value))
+                        ),
+                        default => $query,
                     }),
+
 
 
                 SelectFilter::make('role')
