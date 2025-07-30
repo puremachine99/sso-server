@@ -3,16 +3,14 @@
 namespace App\Filament\Resources;
 
 use App\Models\HcpmUser;
-use App\Models\Department;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
-use Filament\Tables\Actions\ViewAction;
-use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Filters\TernaryFilter;
-use Filament\Tables\Filters\Filter;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\BadgeColumn;
+use Filament\Tables\Actions\ViewAction;
+use Filament\Tables\Filters\SelectFilter;
+use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\HcpmUserResource\Pages;
 
 class HcpmUserResource extends Resource
@@ -31,15 +29,13 @@ class HcpmUserResource extends Resource
 
     public static function form(Form $form): Form
     {
-        return $form->schema([
-            // Bisa diisi jika nanti mendukung edit atau create
-        ]);
+        return $form->schema([]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
-            ->query(fn() => HcpmUser::query()->with(['department', 'jobTitles']))
+            ->query(fn () => HcpmUser::query()->with(['department', 'jobTitles', 'terminationDetails']))
             ->columns([
                 TextColumn::make('name')
                     ->label('Nama')
@@ -82,25 +78,25 @@ class HcpmUserResource extends Resource
             ->defaultSort('name')
             ->filters([
                 SelectFilter::make('status')
-                    ->label('Status Karyawan')
+                    ->label('Status')
                     ->options([
                         'Active' => 'Active',
                         'On_Leave' => 'On Leave',
                         'Terminated' => 'Terminated',
                     ])
-                    ->query(function ($query, $value) {
-                        return $query->whereHas('terminationDetails', function ($sub) use ($value) {
-                            if ($value === 'Active') {
-                                $sub->whereNull('id'); // Tidak ada termination
-                            } else {
-                                $sub->where('status', strtolower($value));
-                            }
-                        });
+                    ->apply(function (Builder $query, $value) {
+                        if ($value === 'Active') {
+                            return $query->whereDoesntHave('terminationDetails');
+                        }
+
+                        return $query->whereHas('terminationDetails', fn ($q) =>
+                            $q->where('status', strtolower($value))
+                        );
                     }),
 
                 SelectFilter::make('role')
                     ->label('Role')
-                    ->options(fn() => HcpmUser::query()->distinct()->pluck('role', 'role')->filter()),
+                    ->options(fn () => HcpmUser::query()->distinct()->pluck('role', 'role')->filter()),
 
                 SelectFilter::make('department_id')
                     ->label('Departemen')
@@ -108,12 +104,9 @@ class HcpmUserResource extends Resource
                     ->searchable(),
             ])
             ->actions([
-                ViewAction::make(), // Hanya view detail
+                ViewAction::make(),
             ])
-            ->bulkActions([
-                // Contoh: Export CSV (kalau mau diaktifkan)
-                // Tables\Actions\BulkAction::make('export')->action(fn (Collection $records) => ...)
-            ]);
+            ->bulkActions([]);
     }
 
     public static function getRelations(): array
@@ -125,8 +118,6 @@ class HcpmUserResource extends Resource
     {
         return [
             'index' => Pages\ListHcpmUsers::route('/'),
-            // 'create' => Pages\CreateHcpmUser::route('/create'), // Nonaktif
-            // 'edit' => Pages\EditHcpmUser::route('/{record}/edit'), // Nonaktif
         ];
     }
 }
