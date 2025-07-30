@@ -9,12 +9,13 @@ class testUserHcpm extends Controller
 {
     public function index()
     {
-        $users = HcpmUser::all(); // Tarik semua user dari DB HCPM
+        $users = HcpmUser::with('jobTitles')->get(); // relasi jobTitles penting
         return view('test.hcpm-users', compact('users'));
     }
     public function show($id)
     {
         $user = HcpmUser::with([
+            'JobTitle',
             'jobDetail',
             'smartnakamaProfile',
             'department',

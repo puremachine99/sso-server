@@ -83,10 +83,10 @@ class UserResource extends Resource
                         'primary' => 'Smartnakama',
                     ]),
                 BadgeColumn::make('source')
-                    ->label('Jenis Akun')
+                    ->label('Acc Type')
                     ->getStateUsing(
                         fn($record) => match ($record->source) {
-                            'synced user' => 'Sinkronisasi',
+                            'synced user' => 'Synced User',
                             'portal' => 'Manual',
                             default => 'Tidak Diketahui',
                         }

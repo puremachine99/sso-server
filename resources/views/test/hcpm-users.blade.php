@@ -19,24 +19,48 @@
                 <th class="py-2 px-4 text-left">Email</th>
                 <th class="py-2 px-4 text-left">Role</th>
                 <th class="py-2 px-4 text-left">Department ID</th>
+                <th class="py-2 px-4 text-left">Jabatan Struktural</th>
+                <th class="py-2 px-4 text-left">Jabatan Fungsional</th>
             </tr>
         </thead>
         <tbody>
             @forelse($users as $user)
                 <tr class="border-t hover:bg-gray-50">
                     <td class="py-2 px-4">{{ $user->id }}</td>
-                    <td class="py-2 px-4"> <a href="{{ route('user.show', $user->id) }}"
-                            class="text-blue-600 hover:underline" target="_blank">
+                    <td class="py-2 px-4">
+                        <a href="{{ route('user.show', $user->id) }}" class="text-blue-600 hover:underline"
+                            target="_blank">
                             {{ $user->name }}
-                        </a></td>
+                        </a>
+                    </td>
                     <td class="py-2 px-4">{{ $user->username }}</td>
                     <td class="py-2 px-4">{{ $user->email }}</td>
                     <td class="py-2 px-4">{{ $user->role }}</td>
                     <td class="py-2 px-4">{{ $user->department_id }}</td>
+                    <td class="py-2 px-4">
+                        @php
+                            $struktural = $user->jobTitles->where('jenis_jabatan', 'Struktural');
+                        @endphp
+                        @forelse($struktural as $jabatan)
+                            <div>{{ $jabatan->nama_jabatan }}</div>
+                        @empty
+                            <div class="text-gray-400 italic">-</div>
+                        @endforelse
+                    </td>
+                    <td class="py-2 px-4">
+                        @php
+                            $fungsional = $user->jobTitles->where('jenis_jabatan', 'Fungsional');
+                        @endphp
+                        @forelse($fungsional as $jabatan)
+                            <div>{{ $jabatan->nama_jabatan }}</div>
+                        @empty
+                            <div class="text-gray-400 italic">-</div>
+                        @endforelse
+                    </td>
                 </tr>
             @empty
                 <tr>
-                    <td colspan="6" class="text-center py-4">Tidak ada user ditemukan</td>
+                    <td colspan="8" class="text-center py-4">Tidak ada user ditemukan</td>
                 </tr>
             @endforelse
         </tbody>

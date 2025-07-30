@@ -32,6 +32,7 @@ class HcpmUserResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->label('Nama')
+                    ->limit(25)
                     ->searchable()
                     ->sortable(),
 
