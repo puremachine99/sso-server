@@ -83,16 +83,18 @@ class UserResource extends Resource
                     ]),
 
                 BadgeColumn::make('source')
-                    ->label('Account Type')
-                    ->getStateUsing(fn($record) => match ($record->source) {
-                        'synced user' => 'Synced User',
-                        'portal' => 'Manual',
-                        default => 'Tidak Diketahui',
-                    })
+                    ->label('Acc Type')
+                    ->getStateUsing(
+                        fn($record) => match ($record->source) {
+                            'synced user' => 'Synced User',
+                            'portal' => 'Manual',
+                            default => 'Tidak Diketahui',
+                        }
+                    )
                     ->colors([
-                        'success' => 'synced user',
-                        'warning' => 'portal',
-                        'gray' => 'default',
+                        'success' => 'Synced User', // ✅ Ijo
+                        'warning' => 'Manual',       // ✅ Kuning
+                        'gray' => 'Tidak Diketahui', // Opsional (jika source null atau typo)
                     ]),
 
                 TextColumn::make('created_at')
