@@ -2,12 +2,13 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\HcpmUserResource\Pages;
 use App\Models\HcpmUser;
 use Filament\Forms\Form;
-use Filament\Resources\Resource;
-use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Resources\Resource;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\BadgeColumn;
+use App\Filament\Resources\HcpmUserResource\Pages;
 
 class HcpmUserResource extends Resource
 {
@@ -17,39 +18,46 @@ class HcpmUserResource extends Resource
     protected static ?string $navigationGroup = 'User Management';
     protected static ?string $label = 'Smartnakama HCPM';
     protected static ?string $navigationLabel = 'Smartnakama HCPM';
+
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();
     }
+
     public static function form(Form $form): Form
     {
-        return $form->schema([]);
+        return $form->schema([
+            // Kosongkan atau tambahkan kalau perlu form
+        ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
+            ->query(
+                fn() => HcpmUser::query()->with(['department', 'jobTitles']) // Eager load
+            )
             ->columns([
-                Tables\Columns\TextColumn::make('name')
+                TextColumn::make('name')
                     ->label('Nama')
                     ->limit(25)
                     ->searchable()
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('email')
+                TextColumn::make('email')
                     ->label('Email')
                     ->searchable()
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('role')
+                TextColumn::make('role')
                     ->label('Role')
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('department.name')
+                TextColumn::make('department.name')
                     ->label('Departemen')
                     ->default('N/A'),
 
-                Tables\Columns\BadgeColumn::make('status')
+                BadgeColumn::make('status')
                     ->label('Status')
                     ->color(fn($state) => match ($state) {
                         'Active' => 'success',
@@ -59,24 +67,24 @@ class HcpmUserResource extends Resource
                     })
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('jobTitlesStruktural')
+                TextColumn::make('jobTitlesStruktural')
                     ->label('Jabatan Struktural')
                     ->getStateUsing(
                         fn($record) =>
-                        $record->jobTitles->firstWhere('jenis_jabatan', 'Struktural')?->job_title ?? '—'
+                        $record->jobTitles->firstWhere('jenis_jabatan', 'Struktural')?->nama_jabatan ?? '—'
                     ),
 
-                Tables\Columns\TextColumn::make('jobTitlesFungsional')
+                TextColumn::make('jobTitlesFungsional')
                     ->label('Jabatan Fungsional')
                     ->getStateUsing(
                         fn($record) =>
-                        $record->jobTitles->firstWhere('jenis_jabatan', 'Fungsional')?->job_title ?? '—'
+                        $record->jobTitles->firstWhere('jenis_jabatan', 'Fungsional')?->nama_jabatan ?? '—'
                     ),
             ])
             ->defaultSort('name')
             ->filters([])
             ->actions([
-
+                // Tambahkan actions jika perlu, seperti View/Edit
             ])
             ->bulkActions([
                 // Tables\Actions\BulkActionGroup::make([

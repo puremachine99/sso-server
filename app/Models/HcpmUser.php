@@ -124,6 +124,15 @@ class HcpmUser extends Model
     {
         return $this->terminationDetails->isEmpty();
     }
+    public function getJobTitlesStrukturalAttribute(): ?string
+    {
+        return $this->jobTitles->firstWhere('jenis_jabatan', 'Struktural')?->nama_jabatan;
+    }
+
+    public function getJobTitlesFungsionalAttribute(): ?string
+    {
+        return $this->jobTitles->firstWhere('jenis_jabatan', 'Fungsional')?->nama_jabatan;
+    }
 
     public function getStatusAttribute(): string
     {
