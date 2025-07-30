@@ -2,23 +2,23 @@
 
 namespace App\Filament\Resources;
 
-use Filament\Forms;
 use App\Models\User;
+use Filament\Forms;
 use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
-use Filament\Resources\Resource;
 use Illuminate\Support\Facades\Hash;
+use Filament\Resources\Resource;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\BadgeColumn;
-use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\UserResource\Pages;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\UserResource\RelationManagers;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Tables\Actions\BulkActionGroup;
 
 class UserResource extends Resource
 {
@@ -27,11 +27,13 @@ class UserResource extends Resource
     protected static ?string $navigationLabel = 'Synced User';
     protected static ?string $navigationGroup = 'User Management';
     protected static ?int $navigationSort = 10;
+
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::role('super_admin')->count();
     }
-    public static function form(Forms\Form $form): Forms\Form
+
+    public static function form(Form $form): Form
     {
         return $form->schema([
             TextInput::make('name')
@@ -61,8 +63,7 @@ class UserResource extends Resource
                 ->required()
                 ->columnSpanFull(),
 
-            Hidden::make('source')
-                ->default('portal'),
+            Hidden::make('source')->default('portal'),
         ]);
     }
 
@@ -72,38 +73,48 @@ class UserResource extends Resource
             ->columns([
                 TextColumn::make('name')->searchable()->limit(25),
                 TextColumn::make('email')->searchable(),
+
                 BadgeColumn::make('role_label')
                     ->label('Role')
-                    ->getStateUsing(
-                        fn($record) =>
-                        $record->hasRole('super_admin') ? 'Superadmin' : 'Smartnakama'
-                    )
+                    ->getStateUsing(fn($record) => $record->hasRole('super_admin') ? 'Superadmin' : 'Smartnakama')
                     ->colors([
                         'danger' => 'Superadmin',
                         'primary' => 'Smartnakama',
                     ]),
+
                 BadgeColumn::make('source')
-                    ->label('Acc Type')
-                    ->getStateUsing(
-                        fn($record) => match ($record->source) {
-                            'synced user' => 'Synced User',
-                            'portal' => 'Manual',
-                            default => 'Tidak Diketahui',
-                        }
-                    )
+                    ->label('Account Type')
+                    ->getStateUsing(fn($record) => match ($record->source) {
+                        'synced user' => 'Synced User',
+                        'portal' => 'Manual',
+                        default => 'Tidak Diketahui',
+                    })
                     ->colors([
-                        'success' => 'Sinkronisasi', // ✅ Ijo
-                        'warning' => 'Manual',       // ✅ Kuning
-                        'gray' => 'Tidak Diketahui', // Opsional (jika source null atau typo)
+                        'success' => 'synced user',
+                        'warning' => 'portal',
+                        'gray' => 'default',
                     ]),
-                TextColumn::make('created_at')->dateTime('d M Y'),
+
+                TextColumn::make('created_at')
+                    ->label('Created')
+                    ->dateTime('d M Y, H:i'),
             ])
             ->filters([
-                //
+                SelectFilter::make('source')
+                    ->label('Account Type')
+                    ->options([
+                        'portal' => 'Manual',
+                        'synced user' => 'Synced User',
+                    ]),
+
+                SelectFilter::make('roles')
+                    ->label('Role')
+                    ->relationship('roles', 'name')
+                    ->searchable(),
             ])
             ->actions([
                 Tables\Actions\Action::make('grantSuperadmin')
-                    ->label('Grant')
+                    ->label('Grant Superadmin')
                     ->icon('heroicon-o-key')
                     ->color('success')
                     ->requiresConfirmation()
@@ -111,14 +122,14 @@ class UserResource extends Resource
                     ->action(fn($record) => $record->assignRole('super_admin'))
                     ->after(
                         fn($record) => Notification::make()
-                            ->title('Role granted')
-                            ->body("{$record->name} now has Superadmin access.")
+                            ->title('Role Granted')
+                            ->body("{$record->name} is now a Superadmin.")
                             ->success()
                             ->send()
                     ),
 
                 Tables\Actions\Action::make('revokeSuperadmin')
-                    ->label('Revoke')
+                    ->label('Revoke Superadmin')
                     ->icon('heroicon-o-lock-closed')
                     ->color('danger')
                     ->requiresConfirmation()
@@ -126,24 +137,22 @@ class UserResource extends Resource
                     ->action(fn($record) => $record->removeRole('super_admin'))
                     ->after(
                         fn($record) => Notification::make()
-                            ->title('Role revoked')
-                            ->body("Superadmin access removed from {$record->name}.")
+                            ->title('Role Revoked')
+                            ->body("Superadmin role removed from {$record->name}.")
                             ->warning()
                             ->send()
                     ),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array

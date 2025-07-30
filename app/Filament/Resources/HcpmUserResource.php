@@ -3,9 +3,14 @@
 namespace App\Filament\Resources;
 
 use App\Models\HcpmUser;
+use App\Models\Department;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
+use Filament\Tables\Actions\ViewAction;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TernaryFilter;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\BadgeColumn;
 use App\Filament\Resources\HcpmUserResource\Pages;
@@ -27,16 +32,14 @@ class HcpmUserResource extends Resource
     public static function form(Form $form): Form
     {
         return $form->schema([
-            // Kosongkan atau tambahkan kalau perlu form
+            // Bisa diisi jika nanti mendukung edit atau create
         ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
-            ->query(
-                fn() => HcpmUser::query()->with(['department', 'jobTitles']) // Eager load
-            )
+            ->query(fn() => HcpmUser::query()->with(['department', 'jobTitles']))
             ->columns([
                 TextColumn::make('name')
                     ->label('Nama')
@@ -55,7 +58,8 @@ class HcpmUserResource extends Resource
 
                 TextColumn::make('department.name')
                     ->label('Departemen')
-                    ->default('N/A'),
+                    ->default('N/A')
+                    ->sortable(),
 
                 BadgeColumn::make('status')
                     ->label('Status')
@@ -67,29 +71,48 @@ class HcpmUserResource extends Resource
                     })
                     ->sortable(),
 
-                TextColumn::make('jobTitlesStruktural')
+                TextColumn::make('job_titles_struktural')
                     ->label('Jabatan Struktural')
-                    ->getStateUsing(
-                        fn($record) =>
-                        $record->jobTitles->firstWhere('jenis_jabatan', 'Struktural')?->nama_jabatan ?? '—'
-                    ),
+                    ->sortable(),
 
-                TextColumn::make('jobTitlesFungsional')
+                TextColumn::make('job_titles_fungsional')
                     ->label('Jabatan Fungsional')
-                    ->getStateUsing(
-                        fn($record) =>
-                        $record->jobTitles->firstWhere('jenis_jabatan', 'Fungsional')?->nama_jabatan ?? '—'
-                    ),
+                    ->sortable(),
             ])
             ->defaultSort('name')
-            ->filters([])
+            ->filters([
+                SelectFilter::make('status')
+                    ->label('Status Karyawan')
+                    ->options([
+                        'Active' => 'Active',
+                        'On_Leave' => 'On Leave',
+                        'Terminated' => 'Terminated',
+                    ])
+                    ->query(function ($query, $value) {
+                        return $query->whereHas('terminationDetails', function ($sub) use ($value) {
+                            if ($value === 'Active') {
+                                $sub->whereNull('id'); // Tidak ada termination
+                            } else {
+                                $sub->where('status', strtolower($value));
+                            }
+                        });
+                    }),
+
+                SelectFilter::make('role')
+                    ->label('Role')
+                    ->options(fn() => HcpmUser::query()->distinct()->pluck('role', 'role')->filter()),
+
+                SelectFilter::make('department_id')
+                    ->label('Departemen')
+                    ->relationship('department', 'name')
+                    ->searchable(),
+            ])
             ->actions([
-                // Tambahkan actions jika perlu, seperti View/Edit
+                ViewAction::make(), // Hanya view detail
             ])
             ->bulkActions([
-                // Tables\Actions\BulkActionGroup::make([
-                //     Tables\Actions\DeleteBulkAction::make(),
-                // ]),
+                // Contoh: Export CSV (kalau mau diaktifkan)
+                // Tables\Actions\BulkAction::make('export')->action(fn (Collection $records) => ...)
             ]);
     }
 
@@ -102,8 +125,8 @@ class HcpmUserResource extends Resource
     {
         return [
             'index' => Pages\ListHcpmUsers::route('/'),
-            // 'create' => Pages\CreateHcpmUser::route('/create'),
-            // 'edit' => Pages\EditHcpmUser::route('/{record}/edit'),
+            // 'create' => Pages\CreateHcpmUser::route('/create'), // Nonaktif
+            // 'edit' => Pages\EditHcpmUser::route('/{record}/edit'), // Nonaktif
         ];
     }
 }
