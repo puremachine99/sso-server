@@ -24,7 +24,7 @@ class UserResource extends Resource
 {
     protected static ?string $model = User::class;
     protected static ?string $navigationIcon = 'heroicon-o-user';
-    protected static ?string $navigationLabel = 'Grant';
+    protected static ?string $navigationLabel = 'Synced User';
     protected static ?string $navigationGroup = 'User Management';
     protected static ?int $navigationSort = 10;
     public static function getNavigationBadge(): ?string
@@ -70,7 +70,7 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name')->searchable(),
+                TextColumn::make('name')->searchable()->limit(25),
                 TextColumn::make('email')->searchable(),
                 BadgeColumn::make('role_label')
                     ->label('Role')
@@ -81,6 +81,20 @@ class UserResource extends Resource
                     ->colors([
                         'danger' => 'Superadmin',
                         'primary' => 'Smartnakama',
+                    ]),
+                BadgeColumn::make('source')
+                    ->label('Jenis Akun')
+                    ->getStateUsing(
+                        fn($record) => match ($record->source) {
+                            'synced user' => 'Sinkronisasi',
+                            'portal' => 'Manual',
+                            default => 'Tidak Diketahui',
+                        }
+                    )
+                    ->colors([
+                        'success' => 'Sinkronisasi', // ✅ Ijo
+                        'warning' => 'Manual',       // ✅ Kuning
+                        'gray' => 'Tidak Diketahui', // Opsional (jika source null atau typo)
                     ]),
                 TextColumn::make('created_at')->dateTime('d M Y'),
             ])

@@ -15,8 +15,8 @@ class HcpmUserResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
     protected static ?string $navigationGroup = 'User Management';
-    protected static ?string $label = 'User HCPM';
-    protected static ?string $navigationLabel = 'User HCPM';
+    protected static ?string $label = 'Smartnakama HCPM';
+    protected static ?string $navigationLabel = 'Smartnakama HCPM';
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();
