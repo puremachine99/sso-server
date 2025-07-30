@@ -25,7 +25,28 @@ class AuthController extends Controller
             'password' => 'required|string|min:6',
         ]);
 
-        // Ambil user dari database HCPM
+        // 1️⃣ Cari di portal dulu (users lokal)
+        $localUser = User::where('email', $request->email)->first();
+
+        if ($localUser && Hash::check($request->password, $localUser->password)) {
+            // Login biasa (manual account)
+            Auth::login($localUser);
+            $request->session()->regenerate();
+
+            LoginLog::create([
+                'user_id' => $localUser->id,
+                'email' => $localUser->email,
+                'app_code' => 'portal',
+                'ip_address' => $request->ip(),
+                'user_agent' => $request->userAgent(),
+                'logged_in_at' => now(),
+                'login_type' => 'manual',
+            ]);
+
+            return redirect()->intended();
+        }
+
+        // 2️⃣ Jika tidak ada di portal atau password salah, cek ke HCPM
         $hcpmUser = HcpmUser::with('jobDetail')->where('email', $request->email)->first();
 
         if (!$hcpmUser || !Hash::check($request->password, $hcpmUser->password)) {
@@ -40,7 +61,7 @@ class AuthController extends Controller
             ]);
         }
 
-        // ✅ Sync user ke database lokal portal
+        // 3️⃣ Sync user ke tabel `users` lokal (jika belum ada)
         $user = User::firstOrCreate(
             ['email' => $hcpmUser->email],
             [
@@ -48,15 +69,13 @@ class AuthController extends Controller
                 'username' => $hcpmUser->username ?? null,
                 'role' => $hcpmUser->role,
                 'department_id' => $hcpmUser->department_id,
-                'password' => bcrypt(Str::random(40)),
+                'password' => bcrypt(Str::random(40)), // placeholder
             ]
         );
 
-        // ✅ Login user lokal ke sistem Auth Laravel
         Auth::login($user);
         $request->session()->regenerate();
 
-        // ✅ Catat login ke LoginLog
         LoginLog::create([
             'user_id' => $user->id,
             'email' => $user->email,
@@ -69,6 +88,7 @@ class AuthController extends Controller
 
         return redirect()->intended();
     }
+
 
     public function logout(Request $request)
     {
