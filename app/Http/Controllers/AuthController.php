@@ -25,27 +25,7 @@ class AuthController extends Controller
             'password' => 'required|string|min:6',
         ]);
 
-        // 1️⃣ Cek portal.users terlebih dahulu
-        $user = User::where('email', $request->email)->first();
-
-        if ($user && Hash::check($request->password, $user->password)) {
-            Auth::login($user);
-            $request->session()->regenerate();
-
-            LoginLog::create([
-                'user_id' => $user->id,
-                'email' => $user->email,
-                'app_code' => 'portal',
-                'ip_address' => $request->ip(),
-                'user_agent' => $request->userAgent(),
-                'logged_in_at' => now(),
-                'login_type' => $user->source ?? 'manual',
-            ]);
-
-            return redirect()->intended();
-        }
-
-        // 2️⃣ Jika tidak ada di portal, cek ke database HCPM
+        // Ambil user dari database HCPM
         $hcpmUser = HcpmUser::with('jobDetail')->where('email', $request->email)->first();
 
         if (!$hcpmUser || !Hash::check($request->password, $hcpmUser->password)) {
@@ -54,28 +34,29 @@ class AuthController extends Controller
             ]);
         }
 
-        if (optional($hcpmUser->jobDetail)->employee_status !== 'Active') {
+        if ($hcpmUser->status !== 'Active') {
             return back()->withErrors([
-                'email' => 'Akun Anda tidak aktif. Hanya karyawan Active yang bisa login.',
+                'email' => 'Akun Anda tidak aktif. Hanya karyawan berstatus Active yang dapat login.',
             ]);
         }
 
-        // 3️⃣ Sinkronkan user ke portal.users, tandai sebagai SSO
+        // ✅ Sync user ke database lokal portal
         $user = User::firstOrCreate(
             ['email' => $hcpmUser->email],
             [
                 'name' => $hcpmUser->name,
                 'username' => $hcpmUser->username ?? null,
-                'role' => $hcpmUser->role ?? 'employee',
+                'role' => $hcpmUser->role,
                 'department_id' => $hcpmUser->department_id,
-                'password' => bcrypt(Str::random(40)), // Dummy password
-                'source' => 'sso', // ✅ penanda akun SSO
+                'password' => bcrypt(Str::random(40)),
             ]
         );
 
+        // ✅ Login user lokal ke sistem Auth Laravel
         Auth::login($user);
         $request->session()->regenerate();
 
+        // ✅ Catat login ke LoginLog
         LoginLog::create([
             'user_id' => $user->id,
             'email' => $user->email,
