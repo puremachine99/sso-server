@@ -16,6 +16,7 @@
                 <th class="py-2 px-4 text-left">ID</th>
                 <th class="py-2 px-4 text-left">Name</th>
                 <th class="py-2 px-4 text-left">Username</th>
+                <th class="py-2 px-4 text-left">Status</th>
                 <th class="py-2 px-4 text-left">Email</th>
                 <th class="py-2 px-4 text-left">Role</th>
                 <th class="py-2 px-4 text-left">Department ID</th>
@@ -34,6 +35,7 @@
                         </a>
                     </td>
                     <td class="py-2 px-4">{{ $user->username }}</td>
+                    <td class="py-2 px-4">{{ $user->jobDetail?->employee_status ?? '—' }}</td>
                     <td class="py-2 px-4">{{ $user->email }}</td>
                     <td class="py-2 px-4">{{ $user->role }}</td>
                     <td class="py-2 px-4">{{ $user->department_id }}</td>

@@ -9,9 +9,10 @@ class testUserHcpm extends Controller
 {
     public function index()
     {
-        $users = HcpmUser::with('jobTitles')->get(); // relasi jobTitles penting
+        $users = HcpmUser::with(['jobTitles', 'jobDetail'])->get();
         return view('test.hcpm-users', compact('users'));
     }
+
     public function show($id)
     {
         $user = HcpmUser::with([
