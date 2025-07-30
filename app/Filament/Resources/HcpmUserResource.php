@@ -85,14 +85,19 @@ class HcpmUserResource extends Resource
                         'Terminated' => 'Terminated',
                     ]),
 
-                SelectFilter::make('role')
-                    ->label('Role')
-                    ->options(fn() => HcpmUser::query()->distinct()->pluck('role', 'role')->filter()),
-
                 SelectFilter::make('department_id')
                     ->label('Departemen')
                     ->relationship('department', 'name')
                     ->searchable(),
+                SelectFilter::make('job_titles_struktural')
+                    ->label('Jabatan Struktural')
+                    ->relationship('jobTitles', 'job_title')
+                    ->searchable(),
+                SelectFilter::make('job_titles_fungsional')
+                    ->label('Jabatan Fungsional')
+                    ->relationship('jobTitles', 'job_title')
+                    ->searchable(),
+
             ])
             ->actions([
                 ViewAction::make(),
