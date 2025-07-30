@@ -27,7 +27,7 @@ class UserResource extends Resource
     protected static ?string $navigationLabel = 'Synced User';
     protected static ?string $navigationGroup = 'User Management';
     protected static ?int $navigationSort = 10;
-
+    protected static string $title = 'Synced and Manual User lists';
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::role('super_admin')->count();
