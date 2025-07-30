@@ -136,16 +136,16 @@ class HcpmUser extends Model
 
     public function getStatusAttribute(): string
     {
-        if ($this->terminationDetails->isEmpty()) {
-            return 'Active';
-        }
-
         $latest = $this->terminationDetails->sortByDesc('created_at')->first();
+
+        if (!$latest || !$latest->status) {
+            return 'Active'; // Tidak ada status berarti aktif
+        }
 
         return match (strtolower($latest->status)) {
             'on_leave' => 'On_Leave',
             'terminated' => 'Terminated',
-            default => 'Terminated',
+            default => 'Terminated', // fallback kalau typo
         };
     }
 }
