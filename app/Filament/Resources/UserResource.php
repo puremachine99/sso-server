@@ -53,7 +53,6 @@ class UserResource extends Resource
                 ->dehydrateStateUsing(fn($state) => Hash::make($state))
                 ->dehydrated(fn($state) => filled($state)),
 
-
             Select::make('roles')
                 ->label('Role')
                 ->relationship('roles', 'name')
@@ -61,6 +60,9 @@ class UserResource extends Resource
                 ->searchable()
                 ->required()
                 ->columnSpanFull(),
+
+            Hidden::make('source')
+                ->default('portal'),
         ]);
     }
 

@@ -70,6 +70,7 @@ class AuthController extends Controller
                 'role' => $hcpmUser->role,
                 'department_id' => $hcpmUser->department_id,
                 'password' => bcrypt(Str::random(40)), // placeholder
+                'source'=> 'synced user',
             ]
         );
 
