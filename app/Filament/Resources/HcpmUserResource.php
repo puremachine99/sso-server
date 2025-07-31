@@ -22,7 +22,7 @@ class HcpmUserResource extends Resource
     protected static ?string $label = 'Smartnakama HCPM';
     protected static ?string $navigationLabel = 'User Database';
     protected static string $title = 'Daftar Karyawan HCPM';
-    protected static ?int $navigationSort = -1;
+    protected static ?int $navigationSort = -3;
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();
