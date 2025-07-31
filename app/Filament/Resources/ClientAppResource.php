@@ -22,8 +22,8 @@ class ClientAppResource extends Resource
 {
     protected static ?string $model = \Laravel\Passport\Client::class;
     protected static ?string $navigationIcon = 'heroicon-o-server';
-    protected static ?string $navigationGroup = 'Client App Management';
-    protected static ?string $navigationLabel = 'Client Apps';
+    // protected static ?string $navigationGroup = 'Application Management';
+    protected static ?string $navigationLabel = 'Application Management';
     protected static ?int $navigationSort = -1;
     public static function getNavigationBadge(): ?string
     {

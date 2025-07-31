@@ -51,7 +51,7 @@ class UserResource extends Resource
                 ->password()
                 ->required(fn($record) => $record === null)
                 ->visible(fn($record) => $record === null)
-                ->default('smartnakama25!!')
+                ->default('smartnakama')
                 ->dehydrateStateUsing(fn($state) => Hash::make($state))
                 ->dehydrated(fn($state) => filled($state)),
 
@@ -63,7 +63,7 @@ class UserResource extends Resource
                 ->required()
                 ->columnSpanFull(),
 
-            Hidden::make('source')->default('portal'),
+            Hidden::make('source')->default('manual'),
         ]);
     }
 
@@ -88,13 +88,13 @@ class UserResource extends Resource
                         fn($record) => match ($record->source) {
                             'synced user' => 'Synced User',
                             'portal' => 'Manual',
-                            default => 'Tidak Diketahui',
+                            default => 'Unkonwn',
                         }
                     )
                     ->colors([
                         'success' => 'Synced User', // ✅ Ijo
                         'warning' => 'Manual',       // ✅ Kuning
-                        'gray' => 'Tidak Diketahui', // Opsional (jika source null atau typo)
+                        'gray' => 'Unknown', // Opsional (jika source null atau typo)
                     ]),
 
                 TextColumn::make('created_at')
