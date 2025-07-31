@@ -24,7 +24,7 @@ class ClientAppResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-server';
     // protected static ?string $navigationGroup = 'Application Management';
     protected static ?string $navigationLabel = 'Application Management';
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 5;
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();
