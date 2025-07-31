@@ -34,8 +34,8 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    // 'nav.group' => 'User Management',
-    'nav.role.label' => 'Role Management',
+    'nav.group' => 'User Management',
+    'nav.role.label' => 'Role Setting',
     'nav.role.icon' => 'heroicon-o-shield-check',
     'resource.label.role' => 'Role',
     'resource.label.roles' => 'Roles',
