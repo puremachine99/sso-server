@@ -16,7 +16,7 @@ class testUserHcpm extends Controller
     public function show($id)
     {
         $user = HcpmUser::with([
-            'JobTitle',
+            'JobTitles',
             'jobDetail',
             'smartnakamaProfile',
             'department',
