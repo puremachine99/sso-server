@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\HcpmUser;
 use App\Models\LoginLog;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -67,13 +68,22 @@ class AuthController extends Controller
             [
                 'name' => $hcpmUser->name,
                 'username' => $hcpmUser->username ?? null,
-                'role' => $hcpmUser->role,
+                // 'role' => $hcpmUser->role,
                 'department_id' => $hcpmUser->department_id,
                 'password' => bcrypt(Str::random(40)), // placeholder
-                'source'=> 'synced user',
+                'source' => 'synced user',
             ]
         );
+        // assign role default
+        $defaultRole = 'smartnakama';
+        $guard = 'web';
 
+        // Cari role_id dari nama role
+        $roleId = DB::table('roles')
+            ->where('name', $defaultRole)
+            ->where('guard_name', $guard)
+            ->value('id');
+        $user->syncRoles([$defaultRole]);
         Auth::login($user);
         $request->session()->regenerate();
 
