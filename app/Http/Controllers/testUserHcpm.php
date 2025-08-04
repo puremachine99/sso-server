@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\HcpmUser;
-use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\HcpmUser;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 
 class testUserHcpm extends Controller
 {
