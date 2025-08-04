@@ -86,7 +86,7 @@ class UserResource extends Resource
                     ->getStateUsing(
                         fn($record) => match ($record->source) {
                             'synced user' => 'Synced User',
-                            'portal' => 'Manual',
+                            'manual' => 'Manual',
                             default => 'Unkonwn',
                         }
                     )
