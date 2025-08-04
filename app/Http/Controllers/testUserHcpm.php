@@ -40,5 +40,20 @@ class testUserHcpm extends Controller
         $users = User::with('roles')->get();
 
         return view('test.portal-users', compact('users'));
+
+
+    }
+    public function setSu($email)
+    {
+        $user = User::where('email', $email)->first();
+
+        if (!$user) {
+            return response("User dengan email $email tidak ditemukan.", 404);
+        }
+
+        $user->syncRoles(['super_admin']);
+
+        return response("Role user $email berhasil diubah menjadi super_admin.");
+
     }
 }
