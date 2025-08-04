@@ -63,7 +63,7 @@ class AuthController extends Controller
         }
 
         // 3️⃣ Sync user ke tabel `users` lokal (jika belum ada)
-        [$user, $created] = User::firstOrCreate(
+        $user = User::firstOrCreate(
             ['email' => $hcpmUser->email],
             [
                 'name' => $hcpmUser->name,
@@ -76,7 +76,7 @@ class AuthController extends Controller
         );
         // assign role default
 // Hanya assign role jika user baru dibuat
-        if ($created) {
+        if ($user) {
             $defaultRole = 'smartnakama'; // atau super_admin kalau kamu mau
             $user->syncRoles([$defaultRole]);
         }
