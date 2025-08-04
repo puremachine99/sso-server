@@ -29,7 +29,7 @@
                 <tr class="border-t hover:bg-gray-50">
                     <td class="py-2 px-4">{{ $user->id }}</td>
                     <td class="py-2 px-4">
-                        <a href="{{ route('user.show', $user->id) }}" class="text-blue-600 hover:underline"
+                        <a href="{{ route('hcpm.show', $user->id) }}" class="text-blue-600 hover:underline"
                             target="_blank">
                             {{ $user->name }}
                         </a>

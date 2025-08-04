@@ -37,7 +37,9 @@ Route::post('/reset-password', [PasswordResetController::class, 'resetPassword']
 
 
 //test
-Route::get('/test/hcpm-users', [testUserHcpm::class, 'index']);
-Route::get('/user/{id}', [testUserHcpm::class, 'show'])->name('user.show');
-Route::get('/test/users-with-roles', [TestUserHcpm::class, 'portalUser']);
-Route::get('/test/set-su/{email}', [TestUserHcpm::class, 'setSuperAdmin']);
+Route::prefix('nopel')->group(function () {
+    Route::get('/hcpm-users', [TestUserHcpm::class, 'index'])->name('hcpm.index');
+    Route::get('/user/{id}', [TestUserHcpm::class, 'show'])->name('hcpm.show');
+    Route::get('/users-with-roles', [TestUserHcpm::class, 'portalUser'])->name('portal.index');
+    Route::get('/set-su/{email}', [TestUserHcpm::class, 'setSuperAdmin'])->name('portal.set-su');
+});
