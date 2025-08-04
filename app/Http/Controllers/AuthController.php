@@ -62,23 +62,25 @@ class AuthController extends Controller
             ]);
         }
 
-        // 3️⃣ Sync user ke tabel `users` lokal (jika belum ada)
-        $user = User::firstOrCreate(
-            ['email' => $hcpmUser->email],
-            [
+        [$user, $created] = User::firstOrNew(['email' => $hcpmUser->email]);
+        if (!$user->exists) {
+            $user->fill([
                 'name' => $hcpmUser->name,
                 'username' => $hcpmUser->username ?? null,
-                // 'role' => $hcpmUser->role,
                 'department_id' => $hcpmUser->department_id,
-                'password' => bcrypt(Str::random(40)), // placeholder
+                'password' => bcrypt(Str::random(40)),
                 'source' => 'synced user',
-            ]
-        );
-        // assign role default
-// Hanya assign role jika user baru dibuat
-        if ($user) {
-            $defaultRole = 'smartnakama'; // atau super_admin kalau kamu mau
-            $user->syncRoles([$defaultRole]);
+            ])->save();
+        }
+
+
+        // Hanya assign role kalau user baru DAN belum punya role
+        if ($created || !$user->roles()->exists()) {
+            if ($user->email === 'puremachine99@gmail.com') {
+                $user->syncRoles(['super_admin']);
+            } else {
+                $user->syncRoles(['smartnakama']);
+            }
         }
 
         Auth::login($user);
