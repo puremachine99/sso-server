@@ -74,36 +74,14 @@ class UserResource extends Resource
                 TextColumn::make('name')->searchable()->limit(25),
                 TextColumn::make('email')->searchable(),
 
-                BadgeColumn::make('name')
-                    ->label('Role')
-                    ->getStateUsing(fn($record) => $record->name)
-                    ->colors(function ($record) {
-                        $roles = Role::withCount('permissions')->get();
-
-                        if ($roles->isEmpty()) {
-                            return ['gray' => $record->name];
-                        }
-
-                        // Ambil nilai max dan min permission count
-                        $max = $roles->max('permissions_count');
-                        $min = $roles->min('permissions_count');
-
-                        // Skor dari 0-100
-                        $score = 0;
-                        if ($max > $min) {
-                            $score = (($record->permissions->count() - $min) / ($max - $min)) * 100;
-                        }
-
-                        // Mapping skor ke warna
-                        return [
-                            match (true) {
-                                $score >= 90 => 'danger',      // paling banyak
-                                $score >= 60 => 'warning',     // sedang banyak
-                                $score >= 30 => 'success',     // sedang
-                                default => 'gray',         // sedikit / default
-                            } => $record->name,
-                        ];
-                    }),
+                // BadgeColumn::make('role_label')
+                //     ->label('Role')
+                //     ->getStateUsing(fn($record) => $record->hasRole('super_admin') ? 'Superadmin' : 'Smartnakama')
+                //     ->colors([
+                //         'danger' => 'Superadmin',
+                //         'primary' => 'Smartnakama',
+                //     ]),
+                TextColumn::make('role_label')->searchable()->limit(25)->label('Role'),
                 BadgeColumn::make('source')
                     ->label('Acc Type')
                     ->getStateUsing(
