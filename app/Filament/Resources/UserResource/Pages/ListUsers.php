@@ -22,7 +22,6 @@ class ListUsers extends ListRecords
             Action::make('syncHcpm')
                 ->label('Sync from HCPM')
                 ->icon('heroicon-o-arrow-down-tray')
-                ->color('secondary')
                 ->requiresConfirmation()
                 ->modalHeading('Sinkronisasi dari HCPM')
                 ->modalSubheading('Apakah Anda yakin ingin melakukan sync semua user dari HCPM ke portal?')
