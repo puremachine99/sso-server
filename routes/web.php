@@ -39,3 +39,4 @@ Route::post('/reset-password', [PasswordResetController::class, 'resetPassword']
 //test
 Route::get('/test/hcpm-users', [testUserHcpm::class, 'index']);
 Route::get('/user/{id}', [testUserHcpm::class, 'show'])->name('user.show');
+Route::get('/test/users-with-roles', [TestUserHcpm::class, 'portalUser']);

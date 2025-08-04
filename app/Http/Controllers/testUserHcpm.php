@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\HcpmUser;
 use Illuminate\Http\Request;
+use App\Models\User;
 
 class testUserHcpm extends Controller
 {
@@ -33,5 +34,11 @@ class testUserHcpm extends Controller
 
 
         return view('test.user-profile', compact('user'));
+    }
+    public function portalUser()
+    {
+        $users = User::with('roles')->get();
+
+        return view('test.portal-users', compact('users'));
     }
 }
