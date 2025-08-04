@@ -43,7 +43,7 @@ class testUserHcpm extends Controller
 
 
     }
-    public function setSuperAdmin($email)
+    public function setSuperAdmin(string $email)
     {
         $user = User::where('email', $email)->first();
 
@@ -54,6 +54,5 @@ class testUserHcpm extends Controller
         $user->syncRoles(['super_admin']);
 
         return response("Role user $email berhasil diubah menjadi super_admin.");
-
     }
 }
