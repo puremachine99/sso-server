@@ -63,7 +63,7 @@ class AuthController extends Controller
         }
 
         // 3️⃣ Sync user ke tabel `users` lokal (jika belum ada)
-        $user = User::firstOrCreate(
+        [$user, $created] = User::firstOrCreate(
             ['email' => $hcpmUser->email],
             [
                 'name' => $hcpmUser->name,
@@ -75,15 +75,12 @@ class AuthController extends Controller
             ]
         );
         // assign role default
-        $defaultRole = 'smartnakama';
-        $guard = 'web';
+// Hanya assign role jika user baru dibuat
+        if ($created) {
+            $defaultRole = 'smartnakama'; // atau super_admin kalau kamu mau
+            $user->syncRoles([$defaultRole]);
+        }
 
-        // Cari role_id dari nama role
-        $roleId = DB::table('roles')
-            ->where('name', $defaultRole)
-            ->where('guard_name', $guard)
-            ->value('id');
-        $user->syncRoles([$defaultRole]);
         Auth::login($user);
         $request->session()->regenerate();
 
