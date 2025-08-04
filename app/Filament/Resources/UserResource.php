@@ -74,14 +74,13 @@ class UserResource extends Resource
                 TextColumn::make('name')->searchable()->limit(25),
                 TextColumn::make('email')->searchable(),
 
-                // BadgeColumn::make('role_label')
-                //     ->label('Role')
-                //     ->getStateUsing(fn($record) => $record->hasRole('super_admin') ? 'Superadmin' : 'Smartnakama')
-                //     ->colors([
-                //         'danger' => 'Superadmin',
-                //         'primary' => 'Smartnakama',
-                //     ]),
-                TextColumn::make('role_label')->searchable()->limit(25)->label('Role'),
+                TextColumn::make('roles')
+                    ->label('Roles')
+                    ->getStateUsing(function ($record) {
+                        return $record->roles->pluck('name')->implode(', ');
+                    })
+                    ->searchable(),
+
                 BadgeColumn::make('source')
                     ->label('Acc Type')
                     ->getStateUsing(
