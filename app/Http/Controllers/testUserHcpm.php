@@ -59,6 +59,7 @@ class testUserHcpm extends Controller
 
     public function syncToPortal()
     {
+        ini_set('max_execution_time', 300); // 5 menit
         $synced = 0;
         $skipped = 0;
 
