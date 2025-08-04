@@ -62,20 +62,23 @@ class AuthController extends Controller
             ]);
         }
 
-        [$user, $created] = User::firstOrNew(['email' => $hcpmUser->email]);
-        if (!$user->exists) {
+        // Cari atau buat user berdasarkan email dari HCPM
+        $user = User::firstOrNew(['email' => $hcpmUser->email]);
+
+        $isNew = !$user->exists;
+
+        if ($isNew) {
             $user->fill([
                 'name' => $hcpmUser->name,
                 'username' => $hcpmUser->username ?? null,
                 'department_id' => $hcpmUser->department_id,
-                'password' => bcrypt(Str::random(40)),
+                'password' => bcrypt(Str::random(40)), // placeholder password
                 'source' => 'synced user',
             ])->save();
         }
 
-
-        // Hanya assign role kalau user baru DAN belum punya role
-        if ($created || !$user->roles()->exists()) {
+        // Hanya assign role jika user baru ATAU belum punya role sama sekali
+        if ($isNew || !$user->roles()->exists()) {
             if ($user->email === 'puremachine99@gmail.com') {
                 $user->syncRoles(['super_admin']);
             } else {
