@@ -55,4 +55,46 @@ class testUserHcpm extends Controller
 
         return response("Role user $email berhasil diubah menjadi super_admin.");
     }
+
+    public function syncToPortal()
+    {
+        $synced = 0;
+        $skipped = 0;
+
+        $hcpmUsers = HcpmUser::all();
+
+        foreach ($hcpmUsers as $hcpm) {
+            // Cari user berdasarkan email
+            $user = User::where('email', $hcpm->email)->first();
+
+            if (!$user) {
+                // Buat user baru
+                $user = User::create([
+                    'name' => $hcpm->name,
+                    'email' => $hcpm->email,
+                    'username' => $hcpm->username ?? null,
+                    'department_id' => $hcpm->department_id ?? null,
+                    'password' => bcrypt(Str::random(40)), // placeholder
+                    'source' => 'synced from hcpm',
+                ]);
+
+                // Assign role default
+                if ($user->email === 'puremachine99@gmail.com') {
+                    $user->syncRoles(['super_admin']);
+                } else {
+                    $user->syncRoles(['smartnakama']);
+                }
+
+                $synced++;
+            } else {
+                $skipped++;
+            }
+        }
+
+        return response()->json([
+            'message' => 'Sync selesai',
+            'synced_users' => $synced,
+            'skipped_existing_users' => $skipped,
+        ]);
+    }
 }
