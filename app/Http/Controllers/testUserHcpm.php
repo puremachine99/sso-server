@@ -43,7 +43,7 @@ class testUserHcpm extends Controller
 
 
     }
-    public function setSu($email)
+    public function setSuperAdmin($email)
     {
         $user = User::where('email', $email)->first();
 
