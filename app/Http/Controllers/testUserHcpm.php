@@ -75,8 +75,8 @@ class testUserHcpm extends Controller
                     'email' => $hcpm->email,
                     'username' => $hcpm->username ?? null,
                     'department_id' => $hcpm->department_id ?? null,
-                    'password' => bcrypt(Str::random(40)), // placeholder
-                    'source' => 'synced from hcpm',
+                    'password' => bcrypt('12345678'),
+                    'source' => 'synced user',
                 ]);
 
                 // Assign role default
