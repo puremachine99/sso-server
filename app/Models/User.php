@@ -46,16 +46,14 @@ class User extends Authenticatable implements HasAvatar
     // Ambil data user dari HCPM, asumsikan email sebagai kunci
     public function hcpm(): ?\App\Models\HcpmUser
     {
-        return \App\Models\HcpmUser::with('terminationDetails')
+        return \App\Models\HcpmUser::with('jobDetail')
             ->where('email', $this->email)
             ->first();
     }
 
     public function syncHcpmStatus(): void
     {
-        $hcpmUser = \App\Models\HcpmUser::with('terminationDetails')
-            ->where('email', $this->email)
-            ->first();
+        $hcpmUser = $this->hcpm();
 
         $status = $hcpmUser?->status ?? 'Unknown';
 
@@ -64,6 +62,4 @@ class User extends Authenticatable implements HasAvatar
             $this->save();
         }
     }
-
-
 }

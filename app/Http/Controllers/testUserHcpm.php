@@ -76,10 +76,10 @@ class testUserHcpm extends Controller
         $synced = 0;
         $updated = 0;
 
-        $hcpmUsers = HcpmUser::with('terminationDetails')->get();
+        $hcpmUsers = HcpmUser::with('jobDetail')->get(); // 👈 load relasi yg benar
 
         foreach ($hcpmUsers as $hcpm) {
-            $status = $hcpm->status; // gunakan accessor secara normal
+            $status = $hcpm->status; // 👈 pakai accessor yang sudah betul
 
             $user = User::where('email', $hcpm->email)->first();
 
@@ -106,11 +106,11 @@ class testUserHcpm extends Controller
             }
         }
 
-
         return response()->json([
             'message' => 'Sync selesai',
             'new_users_synced' => $synced,
             'existing_users_updated' => $updated,
         ]);
     }
+
 }
