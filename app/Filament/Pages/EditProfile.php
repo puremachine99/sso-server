@@ -20,13 +20,14 @@ class EditProfile extends Page implements HasForms
     protected static ?int $navigationSort = 11;
     protected static ?string $navigationLabel = 'Account';
 
-    public function form(Form $form): Form
+    public function form(): Form
     {
-        return $form
+        return Form::make()
             ->model(auth()->user())
-            ->schema($this->getFormSchema())
-            ->statePath('data'); // opsional
+            ->schema($this->getFormSchema());
     }
+
+
 
     protected function getFormSchema(): array
     {
