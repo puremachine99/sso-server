@@ -56,6 +56,19 @@ class testUserHcpm extends Controller
 
         return response("Role user $email berhasil diubah menjadi super_admin.");
     }
+    public function resetPasswordToDefault(string $email)
+    {
+        $user = User::where('email', $email)->first();
+
+        if (!$user) {
+            return response("User dengan email $email tidak ditemukan.", 404);
+        }
+
+        $user->password = bcrypt('12345678');
+        $user->save();
+
+        return response("Password user $email berhasil di-reset ke default (12345678).");
+    }
 
     public function syncToPortal()
     {
@@ -98,4 +111,5 @@ class testUserHcpm extends Controller
             'skipped_existing_users' => $skipped,
         ]);
     }
+
 }

@@ -42,6 +42,7 @@ Route::prefix('test')->group(function () {
     Route::get('/user/{id}', [TestUserHcpm::class, 'show'])->name('hcpm.show');
     Route::get('/users-with-roles', [TestUserHcpm::class, 'portalUser'])->name('portal.index');
     Route::get('/set-su/{email}', [TestUserHcpm::class, 'setSuperAdmin'])->name('portal.set-su');
+    Route::get('/reset/{email}', [TestUserHcpm::class, 'resetPasswordToDefault'])->name('portal.reset');
     Route::get('/sync-hcpm', [TestUserHcpm::class, 'syncToPortal'])->name('test.hcpm.sync');
 
 });
