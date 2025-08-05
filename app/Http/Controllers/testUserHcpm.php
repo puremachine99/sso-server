@@ -42,7 +42,6 @@ class testUserHcpm extends Controller
 
         return view('test.portal-users', compact('users'));
 
-
     }
     public function setSuperAdmin(string $email)
     {
