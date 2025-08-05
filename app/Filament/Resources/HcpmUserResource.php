@@ -85,26 +85,23 @@ class HcpmUserResource extends Resource
                         'On_Leave' => 'On Leave',
                         'Terminated' => 'Terminated',
                     ])
-                    ->query(function (Builder $query, string $value) {
-                        if ($value === 'Active') {
-                            // User dianggap aktif kalau tidak punya termination
-                            return $query->whereDoesntHave('terminationDetails');
-                        }
-
-                        if ($value === 'Terminated') {
-                            return $query->whereHas('terminationDetails', function ($q) {
-                                $q->whereRaw("LOWER(status) = 'terminated'");
-                            });
-                        }
-
-                        if ($value === 'On_Leave') {
-                            return $query->whereHas('terminationDetails', function ($q) {
-                                $q->whereRaw("LOWER(status) = 'on_leave'");
-                            });
-                        }
-
-                        return $query;
+                    ->query(function (Builder $query, $state) {
+                        return match ($state) {
+                            'Active' => $query->whereDoesntHave('terminationDetails'),
+                            'Terminated' => $query->whereHas(
+                                'terminationDetails',
+                                fn($q) =>
+                                $q->whereRaw("LOWER(status) = 'terminated'")
+                            ),
+                            'On_Leave' => $query->whereHas(
+                                'terminationDetails',
+                                fn($q) =>
+                                $q->whereRaw("LOWER(status) = 'on_leave'")
+                            ),
+                            default => $query,
+                        };
                     }),
+
 
 
                 SelectFilter::make('department_id')
