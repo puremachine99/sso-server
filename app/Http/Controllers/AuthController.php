@@ -137,6 +137,7 @@ class AuthController extends Controller
                 'email' => 'Login gagal. Cek email dan password.',
             ]);
         }
+
         Auth::login($user);
         $request->session()->regenerate();
 
