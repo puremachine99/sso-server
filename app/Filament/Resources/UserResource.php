@@ -93,8 +93,6 @@ class UserResource extends Resource
                     ])
                     ->sortable(),
 
-
-
                 BadgeColumn::make('source')
                     ->label('Acc Type')
                     ->getStateUsing(
@@ -140,35 +138,35 @@ class UserResource extends Resource
 
             ])
             ->actions([
-                Tables\Actions\Action::make('grantSuperadmin')
-                    ->label('Grant Superadmin')
-                    ->icon('heroicon-o-key')
-                    ->color('success')
-                    ->requiresConfirmation()
-                    ->visible(fn($record) => !$record->hasRole('super_admin'))
-                    ->action(fn($record) => $record->assignRole('super_admin'))
-                    ->after(
-                        fn($record) => Notification::make()
-                            ->title('Role Granted')
-                            ->body("{$record->name} is now a Superadmin.")
-                            ->success()
-                            ->send()
-                    ),
+                // Tables\Actions\Action::make('grantSuperadmin')
+                //     ->label('Grant Superadmin')
+                //     ->icon('heroicon-o-key')
+                //     ->color('success')
+                //     ->requiresConfirmation()
+                //     ->visible(fn($record) => !$record->hasRole('super_admin'))
+                //     ->action(fn($record) => $record->assignRole('super_admin'))
+                //     ->after(
+                //         fn($record) => Notification::make()
+                //             ->title('Role Granted')
+                //             ->body("{$record->name} is now a Superadmin.")
+                //             ->success()
+                //             ->send()
+                //     ),
 
-                Tables\Actions\Action::make('revokeSuperadmin')
-                    ->label('Revoke Superadmin')
-                    ->icon('heroicon-o-lock-closed')
-                    ->color('danger')
-                    ->requiresConfirmation()
-                    ->visible(fn($record) => $record->hasRole('super_admin'))
-                    ->action(fn($record) => $record->removeRole('super_admin'))
-                    ->after(
-                        fn($record) => Notification::make()
-                            ->title('Role Revoked')
-                            ->body("Superadmin role removed from {$record->name}.")
-                            ->warning()
-                            ->send()
-                    ),
+                // Tables\Actions\Action::make('revokeSuperadmin')
+                //     ->label('Revoke Superadmin')
+                //     ->icon('heroicon-o-lock-closed')
+                //     ->color('danger')
+                //     ->requiresConfirmation()
+                //     ->visible(fn($record) => $record->hasRole('super_admin'))
+                //     ->action(fn($record) => $record->removeRole('super_admin'))
+                //     ->after(
+                //         fn($record) => Notification::make()
+                //             ->title('Role Revoked')
+                //             ->body("Superadmin role removed from {$record->name}.")
+                //             ->warning()
+                //             ->send()
+                //     ),
             ])
             ->bulkActions([
                 BulkActionGroup::make([
