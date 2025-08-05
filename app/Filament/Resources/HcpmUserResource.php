@@ -27,7 +27,17 @@ class HcpmUserResource extends Resource
     {
         return static::getModel()::count();
     }
+    //hide
+    public static function shouldRegisterNavigation(): bool
+    {
+        return false; // tidak muncul di sidebar
+    }
 
+    public static function canAccess(): bool
+    {
+        return false; // tidak muncul di daftar permission / role management
+    }
+    
     public static function form(Form $form): Form
     {
         return $form->schema([]);
@@ -108,7 +118,7 @@ class HcpmUserResource extends Resource
                     ->label('Departemen')
                     ->relationship('department', 'name')
                     ->searchable(),
-                
+
 
             ])
             ->actions([
