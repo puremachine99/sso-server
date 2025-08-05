@@ -72,14 +72,14 @@ class testUserHcpm extends Controller
     public function syncToPortal()
     {
         ini_set('max_execution_time', 300); // 5 menit
+
         $synced = 0;
-        $skipped = 0;
+        $updated = 0;
 
         $hcpmUsers = HcpmUser::with('terminationDetails')->get();
 
         foreach ($hcpmUsers as $hcpm) {
-            // Ambil status HCPM dari accessor
-            $status = $hcpm->status; // ini dari getStatusAttribute()
+            $status = $hcpm->status; // dari accessor getStatusAttribute()
 
             // Cari user berdasarkan email
             $user = User::where('email', $hcpm->email)->first();
@@ -91,7 +91,7 @@ class testUserHcpm extends Controller
                     'email' => $hcpm->email,
                     'username' => $hcpm->username ?? null,
                     'department_id' => $hcpm->department_id ?? null,
-                    'password' => bcrypt('12345678'), // amankan default password
+                    'password' => bcrypt('12345678'), // default password
                     'source' => 'synced user',
                     'hcpm_status' => $status,
                 ]);
@@ -105,20 +105,22 @@ class testUserHcpm extends Controller
 
                 $synced++;
             } else {
-                // Update status jika sudah ada user-nya
+                // Update status tanpa cek sama atau tidak
                 $user->update([
                     'hcpm_status' => $status,
                 ]);
-                $skipped++;
+
+                $updated++;
             }
         }
 
         return response()->json([
             'message' => 'Sync selesai',
-            'synced_users' => $synced,
-            'updated_existing_users' => $skipped,
+            'new_users_synced' => $synced,
+            'existing_users_updated' => $updated,
         ]);
     }
+
 
 
 }
