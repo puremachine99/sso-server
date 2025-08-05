@@ -134,18 +134,22 @@ class HcpmUser extends Model
         return $this->jobTitles->firstWhere('jenis_jabatan', 'Fungsional')?->nama_jabatan;
     }
 
+    // public function getStatusAttribute(): string
+    // {
+    //     $latest = $this->terminationDetails->sortByDesc('created_at')->first();
+
+    //     if (!$latest || !$latest->status) {
+    //         return 'Active'; // Tidak ada status berarti aktif
+    //     }
+
+    //     return match (strtolower($latest->status)) {
+    //         'on_leave' => 'On_Leave',
+    //         'terminated' => 'Terminated',
+    //         default => 'Terminated', // fallback kalau typo
+    //     };
+    // }
     public function getStatusAttribute(): string
     {
-        $latest = $this->terminationDetails->sortByDesc('created_at')->first();
-
-        if (!$latest || !$latest->status) {
-            return 'Active'; // Tidak ada status berarti aktif
-        }
-
-        return match (strtolower($latest->status)) {
-            'on_leave' => 'On_Leave',
-            'terminated' => 'Terminated',
-            default => 'Terminated', // fallback kalau typo
-        };
+        return $this->jobDetail?->employee_status ?? 'Unknown';
     }
 }

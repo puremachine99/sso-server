@@ -77,7 +77,7 @@ class testUserHcpm extends Controller
         $updated = 0;
 
         $hcpmUsers = HcpmUser::with('jobDetail')->get(); // 👈 load relasi yg benar
-
+        
         foreach ($hcpmUsers as $hcpm) {
             $status = $hcpm->status; // 👈 pakai accessor yang sudah betul
 
