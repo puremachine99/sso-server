@@ -78,7 +78,7 @@ class AdminPanelProvider extends PanelProvider
                     ->setNavigationGroup('Group Profile')
                     ->setIcon('heroicon-o-user')
                     ->setSort(10)
-                    ->shouldShowEmailForm(true)
+                    ->shouldShowEmailForm(false)
                     ->shouldShowDeleteAccountForm(false)
                     ->shouldShowSanctumTokens(true)
                     ->shouldShowBrowserSessionsForm(true)
