@@ -14,14 +14,14 @@ use Filament\Forms\Concerns\InteractsWithForms;
 class EditProfile extends Page implements HasForms
 {
     use InteractsWithForms;
-
+    public Form $form;
     protected static ?string $navigationGroup = 'User Management';
     protected static ?string $navigationIcon = 'heroicon-o-user-circle';
     protected static string $view = 'filament.pages.edit-profile';
     protected static ?int $navigationSort = 11;
     protected static ?string $navigationLabel = 'Account';
 
-    public function mount(): void
+    public function afterMount(): void // ✅ ganti dari mount() ke afterMount()
     {
         $this->form->fill([
             'name' => auth()->user()->name,
