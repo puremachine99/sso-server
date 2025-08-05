@@ -23,6 +23,8 @@ use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+use Joaopaulolndev\FilamentEditProfile\Pages\EditProfilePage;
+use Joaopaulolndev\FilamentEditProfile\FilamentEditProfilePlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -35,9 +37,10 @@ class AdminPanelProvider extends PanelProvider
             ->profile()
             ->userMenuItems([
                 'profile' => MenuItem::make()
-                    ->label('Profil Saya')
-                    ->icon('heroicon-o-user-circle')
-                    ->url(fn() => EditProfile::getUrl()),
+                    ->label(fn() => auth()->user()->name)
+                    ->url(fn(): string => EditProfilePage::getUrl())
+                    ->icon('heroicon-m-user-circle')
+
             ])
             ->colors([
                 'primary' => Color::Indigo,
@@ -66,6 +69,19 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->plugins([
                 FilamentShieldPlugin::make(),
+                FilamentEditProfilePlugin::make()
+                    ->slug('my-profile')
+                    ->setTitle('My Profile')
+                    ->setNavigationLabel('My Profile')
+                    ->setNavigationGroup('Group Profile')
+                    ->setIcon('heroicon-o-user')
+                    ->setSort(10)
+                    ->shouldShowEmailForm(true)                 
+                    ->shouldShowDeleteAccountForm(true)         
+                    ->shouldShowSanctumTokens(true)          
+                    ->shouldShowBrowserSessionsForm(true)       
+                    ->shouldShowAvatarForm(true)               
+                    ->shouldRegisterNavigation(true)            
             ])
             ->authMiddleware([
                 Authenticate::class,
