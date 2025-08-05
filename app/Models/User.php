@@ -23,7 +23,7 @@ class User extends Authenticatable implements HasAvatar
         'avatar_url',
         'hcpm_status', // pastikan ini ada di DB dan $fillable
     ];
-
+    protected $with = ['terminationDetails'];
     protected $hidden = [
         'password',
         'remember_token',
@@ -44,9 +44,11 @@ class User extends Authenticatable implements HasAvatar
     }
 
     // Ambil data user dari HCPM, asumsikan email sebagai kunci
-    public function hcpm()
+    public function hcpm(): ?\App\Models\HcpmUser
     {
-        return \App\Models\HcpmUser::where('email', $this->email)->first();
+        return \App\Models\HcpmUser::with('terminationDetails')
+            ->where('email', $this->email)
+            ->first();
     }
 
     public function syncHcpmStatus(): void
