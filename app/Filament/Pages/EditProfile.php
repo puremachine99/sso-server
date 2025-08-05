@@ -62,19 +62,16 @@ class EditProfile extends Page implements HasForms
         ];
     }
 
-
     public function save()
     {
         $data = $this->form->getState();
 
-        // Validasi manual jika password diisi [PORTL-41]
         if (!empty($data['password']) && $data['password'] !== $data['password_confirmation']) {
             Notification::make()
                 ->title('Password dan konfirmasi tidak cocok.')
                 ->danger()
                 ->send();
-
-            return; // stop proses simpan
+            return;
         }
 
         $user = Auth::user();
@@ -92,5 +89,6 @@ class EditProfile extends Page implements HasForms
             ->success()
             ->send();
     }
+
 
 }
