@@ -78,11 +78,12 @@ class AdminPanelProvider extends PanelProvider
                     ->setIcon('heroicon-o-user')
                     ->setSort(10)
                     ->shouldShowEmailForm(true)
-                    ->shouldShowDeleteAccountForm(true)
+                    ->shouldShowDeleteAccountForm(false)
                     ->shouldShowSanctumTokens(true)
                     ->shouldShowBrowserSessionsForm(true)
-                    ->shouldShowAvatarForm(true)
+                    ->shouldShowAvatarForm(false)
                     ->shouldRegisterNavigation(true),
+                    
             ])
             ->authMiddleware([
                 Authenticate::class,
