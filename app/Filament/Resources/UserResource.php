@@ -80,6 +80,16 @@ class UserResource extends Resource
                         return $record->roles->pluck('name')->implode(', ');
                     })
                     ->searchable(),
+                BadgeColumn::make('hcpm_status')
+                    ->label('Status HCPM')
+                    ->colors([
+                        'success' => 'Active',
+                        'warning' => 'On_Leave',
+                        'danger' => 'Terminated',
+                        'gray' => 'Unknown',
+                    ])
+                    ->sortable(),
+
 
                 BadgeColumn::make('source')
                     ->label('Acc Type')
@@ -101,6 +111,15 @@ class UserResource extends Resource
                     ->dateTime('d M Y, H:i'),
             ])
             ->filters([
+                SelectFilter::make('hcpm_status')
+                    ->label('Status HCPM')
+                    ->options([
+                        'Active' => 'Active',
+                        'On_Leave' => 'On Leave',
+                        'Terminated' => 'Terminated',
+                        'Unknown' => 'Unknown',
+                    ]),
+
                 SelectFilter::make('source')
                     ->label('Account Type')
                     ->options([
@@ -112,6 +131,8 @@ class UserResource extends Resource
                     ->label('Role')
                     ->relationship('roles', 'name')
                     ->searchable(),
+
+
             ])
             ->actions([
                 Tables\Actions\Action::make('grantSuperadmin')

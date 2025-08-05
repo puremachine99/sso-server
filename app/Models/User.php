@@ -21,6 +21,7 @@ class User extends Authenticatable implements HasAvatar
         'password',
         'source',
         'avatar_url',
+        'hcpm_status', // pastikan ini ada di DB dan $fillable
     ];
 
     protected $hidden = [
@@ -40,5 +41,18 @@ class User extends Authenticatable implements HasAvatar
     {
         $avatarColumn = config('filament-edit-profile.avatar_column', 'avatar_url');
         return $this->$avatarColumn ? Storage::url($this->$avatarColumn) : null;
+    }
+
+    // Ambil data user dari HCPM, asumsikan email sebagai kunci
+    public function hcpm()
+    {
+        return \App\Models\HcpmUser::where('email', $this->email)->first();
+    }
+
+    public function syncHcpmStatus(): void
+    {
+        $hcpmUser = $this->hcpm();
+        $this->hcpm_status = $hcpmUser?->status ?? 'Unknown';
+        $this->save();
     }
 }

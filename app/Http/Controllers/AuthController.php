@@ -137,8 +137,8 @@ class AuthController extends Controller
                 'email' => 'Login gagal. Cek email dan password.',
             ]);
         }
-
         Auth::login($user);
+        $user->syncHcpmStatus(); // update status HCPM di kolom user
         $request->session()->regenerate();
 
         LoginLog::create([
