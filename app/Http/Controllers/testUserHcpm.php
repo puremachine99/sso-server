@@ -79,35 +79,25 @@ class testUserHcpm extends Controller
         $hcpmUsers = HcpmUser::with('terminationDetails')->get();
 
         foreach ($hcpmUsers as $hcpm) {
-            // pastikan accessor jalan setelah relasi dimuat
-            $status = $hcpm->getStatusAttribute(); // <= langsung panggil accessor
-            // atau cukup: $status = $hcpm->status; (kalau yakin relasi termuat)
+            $status = $hcpm->status; // gunakan accessor secara normal
 
-            // Cari user berdasarkan email
             $user = User::where('email', $hcpm->email)->first();
 
             if (!$user) {
-                // Buat user baru
                 $user = User::create([
                     'name' => $hcpm->name,
                     'email' => $hcpm->email,
-                    'username' => $hcpm->username ?? null,
-                    'department_id' => $hcpm->department_id ?? null,
-                    'password' => bcrypt('12345678'), // default password
+                    'password' => bcrypt('12345678'),
                     'source' => 'synced user',
                     'hcpm_status' => $status,
                 ]);
 
-                // Assign role default
-                if ($user->email === 'puremachine99@gmail.com') {
-                    $user->syncRoles(['super_admin']);
-                } else {
-                    $user->syncRoles(['Smartnakama']);
-                }
+                $user->syncRoles(
+                    $user->email === 'puremachine99@gmail.com' ? ['super_admin'] : ['Smartnakama']
+                );
 
                 $synced++;
             } else {
-                // Update hcpm_status meskipun sama
                 $user->update([
                     'hcpm_status' => $status,
                 ]);
@@ -115,6 +105,7 @@ class testUserHcpm extends Controller
                 $updated++;
             }
         }
+
 
         return response()->json([
             'message' => 'Sync selesai',
