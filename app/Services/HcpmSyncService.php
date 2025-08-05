@@ -20,12 +20,15 @@ class HcpmSyncService
             $user = User::where('email', $hcpm->email)->first();
 
             if (!$user) {
+                // Buat baru full dari HCPM
                 $user = User::create([
                     'name' => $hcpm->name,
                     'email' => $hcpm->email,
                     'password' => bcrypt('12345678'),
                     'source' => 'synced user',
                     'hcpm_status' => $status,
+                    'department_id' => $hcpm->department_id ?? null,
+                    'username' => $hcpm->username ?? null,
                 ]);
 
                 $user->syncRoles(
@@ -34,11 +37,32 @@ class HcpmSyncService
 
                 $synced++;
             } else {
-                $user->update(['hcpm_status' => $status]);
-                $updated++;
+                // Update semua kolom kecuali email & name
+                $needsUpdate = false;
+
+                $fieldsToSync = [
+                    'username' => $hcpm->username ?? null,
+                    'department_id' => $hcpm->department_id ?? null,
+                    'hcpm_status' => $status,
+                    'source' => 'synced user',
+                    'password' => bcrypt('12345678'), // default sync password setiap sync
+                ];
+
+                foreach ($fieldsToSync as $column => $newValue) {
+                    if ($user->$column !== $newValue) {
+                        $user->$column = $newValue;
+                        $needsUpdate = true;
+                    }
+                }
+
+                if ($needsUpdate) {
+                    $user->save();
+                    $updated++;
+                }
             }
         }
 
         return compact('synced', 'updated');
     }
+
 }
