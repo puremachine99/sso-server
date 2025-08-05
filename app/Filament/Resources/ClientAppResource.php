@@ -111,7 +111,7 @@ class ClientAppResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make()
-                        ->before(function (array $records) {
+                        ->before(function (\Illuminate\Support\Collection $records) {
                             foreach ($records as $record) {
                                 $secret = \App\Models\ClientSecret::find($record->id);
                                 if ($secret) {
@@ -121,6 +121,7 @@ class ClientAppResource extends Resource
                         }),
                 ]),
             ]);
+
     }
 
     public static function getRelations(): array
