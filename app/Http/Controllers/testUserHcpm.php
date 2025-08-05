@@ -76,9 +76,12 @@ class testUserHcpm extends Controller
         $synced = 0;
         $skipped = 0;
 
-        $hcpmUsers = HcpmUser::all();
+        $hcpmUsers = HcpmUser::with('terminationDetails')->get();
 
         foreach ($hcpmUsers as $hcpm) {
+            // Ambil status HCPM dari accessor
+            $status = $hcpm->status; // ini dari getStatusAttribute()
+
             // Cari user berdasarkan email
             $user = User::where('email', $hcpm->email)->first();
 
@@ -89,8 +92,9 @@ class testUserHcpm extends Controller
                     'email' => $hcpm->email,
                     'username' => $hcpm->username ?? null,
                     'department_id' => $hcpm->department_id ?? null,
-                    'password' => $hcpm->password,
+                    'password' => bcrypt('12345678'), // amankan default password
                     'source' => 'synced user',
+                    'hcpm_status' => $status,
                 ]);
 
                 // Assign role default
@@ -99,17 +103,23 @@ class testUserHcpm extends Controller
                 } else {
                     $user->syncRoles(['Smartnakama']);
                 }
-                $synced++; // count jumlah user yang berhasil disinkronkan
+
+                $synced++;
             } else {
-                $skipped++; // count jumlah user yang tidak disinkronkan disekip
+                // Update status jika sudah ada user-nya
+                $user->update([
+                    'hcpm_status' => $status,
+                ]);
+                $skipped++;
             }
         }
 
         return response()->json([
             'message' => 'Sync selesai',
             'synced_users' => $synced,
-            'skipped_existing_users' => $skipped,
+            'updated_existing_users' => $skipped,
         ]);
     }
+
 
 }

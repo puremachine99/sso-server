@@ -138,7 +138,6 @@ class AuthController extends Controller
             ]);
         }
         Auth::login($user);
-        $user->syncHcpmStatus(); // update status HCPM di kolom user
         $request->session()->regenerate();
 
         LoginLog::create([
