@@ -83,10 +83,6 @@ class AdminPanelProvider extends PanelProvider
                     ->shouldShowBrowserSessionsForm(true)
                     ->shouldShowAvatarForm(true)
                     ->shouldRegisterNavigation(true),
-                FilamentEditProfilePlugin::make()
-                    ->customProfileComponents([
-                        CustomProfileComponent::class,
-                    ]),
             ])
             ->authMiddleware([
                 Authenticate::class,

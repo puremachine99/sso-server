@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\User;
 use Laravel\Passport\Passport;
+use App\Observers\UserObserver;
 use Illuminate\Routing\UrlGenerator;
 use Illuminate\Support\ServiceProvider;
 
@@ -25,7 +27,7 @@ class AppServiceProvider extends ServiceProvider
         // if (env('APP_ENV') !== 'local') {
         //     $url->forceScheme('https');
         // }
-
+        User::observe(UserObserver::class);
         // Existing Passport setup – do not remove
         Passport::authorizationView('oauth.authorize');
         Passport::tokensExpireIn(now()->addDays(15));

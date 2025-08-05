@@ -7,66 +7,122 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.1/dist/tailwind.min.css" rel="stylesheet">
 </head>
 
-<body class="bg-gray-100 p-10">
-    <h1 class="text-2xl font-bold mb-4">Daftar User dari HCPM</h1>
+<body class="bg-gray-50 p-6">
+    <div class="max-w-7xl mx-auto">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-3xl font-bold text-gray-800">User Directory</h1>
+            <div class="text-sm text-gray-500">{{ count($users) }} users found</div>
+        </div>
 
-    <table class="min-w-full bg-white shadow-md rounded border border-gray-200">
-        <thead>
-            <tr class="bg-gray-100 border-b">
-                <th class="py-2 px-4 text-left">ID</th>
-                <th class="py-2 px-4 text-left">Name</th>
-                <th class="py-2 px-4 text-left">Username</th>
-                <th class="py-2 px-4 text-left">Status</th>
-                <th class="py-2 px-4 text-left">Email</th>
-                <th class="py-2 px-4 text-left">Role</th>
-                <th class="py-2 px-4 text-left">Department ID</th>
-                <th class="py-2 px-4 text-left">Jabatan Struktural</th>
-                <th class="py-2 px-4 text-left">Jabatan Fungsional</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse($users as $user)
-                <tr class="border-t hover:bg-gray-50">
-                    <td class="py-2 px-4">{{ $user->id }}</td>
-                    <td class="py-2 px-4">
-                        <a href="{{ route('hcpm.show', $user->id) }}" class="text-blue-600 hover:underline"
-                            target="_blank">
-                            {{ $user->name }}
-                        </a>
-                    </td>
-                    <td class="py-2 px-4">{{ $user->username }}</td>
-                    <td class="py-2 px-4">{{ $user->jobDetail?->employee_status ?? '—' }}</td>
-                    <td class="py-2 px-4">{{ $user->email }}</td>
-                    <td class="py-2 px-4">{{ $user->role }}</td>
-                    <td class="py-2 px-4">{{ $user->department_id }}</td>
-                    <td class="py-2 px-4">
-                        @php
-                            $struktural = $user->jobTitles->where('jenis_jabatan', 'Struktural');
-                        @endphp
-                        @forelse($struktural as $jabatan)
-                            <div>{{ $jabatan->nama_jabatan }}</div>
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                ID</th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Name</th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Username</th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Status</th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Email</th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Role</th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Department</th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Struktural</th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Fungsional</th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Created</th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Updated</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        @forelse($users as $user)
+                            <tr class="hover:bg-gray-50 transition-colors duration-150">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                    {{ $user->id }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <a href="{{ route('hcpm.show', $user->id) }}"
+                                        class="text-sm font-semibold text-blue-600 hover:text-blue-800 hover:underline">
+                                        {{ $user->name }}
+                                    </a>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $user->username }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    @php
+                                        $status = $user->jobDetail?->employee_status ?? null;
+                                        $statusColor =
+                                            $status === 'Active'
+                                                ? 'bg-green-100 text-green-800'
+                                                : ($status
+                                                    ? 'bg-blue-100 text-blue-800'
+                                                    : 'bg-gray-100 text-gray-800');
+                                    @endphp
+                                    <span
+                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $statusColor }}">
+                                        {{ $status ?? '—' }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $user->email }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $user->role }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $user->department_id }}
+                                </td>
+                                <td class="px-6 py-4 text-sm text-gray-500">
+                                    @php
+                                        $struktural = $user->jobTitles->where('jenis_jabatan', 'Struktural');
+                                    @endphp
+                                    @forelse($struktural as $jabatan)
+                                        <div class="mb-1 last:mb-0">{{ $jabatan->nama_jabatan }}</div>
+                                    @empty
+                                        <div class="text-gray-400 italic">—</div>
+                                    @endforelse
+                                </td>
+                                <td class="px-6 py-4 text-sm text-gray-500">
+                                    @php
+                                        $fungsional = $user->jobTitles->where('jenis_jabatan', 'Fungsional');
+                                    @endphp
+                                    @forelse($fungsional as $jabatan)
+                                        <div class="mb-1 last:mb-0">{{ $jabatan->nama_jabatan }}</div>
+                                    @empty
+                                        <div class="text-gray-400 italic">—</div>
+                                    @endforelse
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    {{ $user->created_at?->format('Y-m-d H:i') ?? '—' }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    {{ $user->updated_at?->format('Y-m-d H:i') ?? '—' }}
+                                </td>
+                            </tr>
                         @empty
-                            <div class="text-gray-400 italic">-</div>
+                            <tr>
+                                <td colspan="9" class="px-6 py-4 text-center text-sm text-gray-500">No users found
+                                </td>
+                            </tr>
                         @endforelse
-                    </td>
-                    <td class="py-2 px-4">
-                        @php
-                            $fungsional = $user->jobTitles->where('jenis_jabatan', 'Fungsional');
-                        @endphp
-                        @forelse($fungsional as $jabatan)
-                            <div>{{ $jabatan->nama_jabatan }}</div>
-                        @empty
-                            <div class="text-gray-400 italic">-</div>
-                        @endforelse
-                    </td>
-                </tr>
-            @empty
-                <tr>
-                    <td colspan="8" class="text-center py-4">Tidak ada user ditemukan</td>
-                </tr>
-            @endforelse
-        </tbody>
-    </table>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
