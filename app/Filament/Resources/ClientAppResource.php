@@ -31,8 +31,9 @@ class ClientAppResource extends Resource
     }
     public static function canViewAny(): bool
     {
-        return auth()->user()?->hasRole('super_admin');
+        return auth()->check() && auth()->user()->hasRole('super_admin');
     }
+
     public static function form(Form $form): Form
     {
         return $form->schema([
