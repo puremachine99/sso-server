@@ -10,7 +10,7 @@ class UserWelcomeWidget extends Widget
 
     protected static ?int $sort = -3; // biar tampil paling atas
 
-    protected int|string|array $columnSpan = 'full';
+    // protected int|string|array $columnSpan = 'full';
 
     public function getUser()
     {

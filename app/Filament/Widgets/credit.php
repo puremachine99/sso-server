@@ -6,7 +6,7 @@ use Filament\Widgets\Widget;
 
 class credit extends Widget
 {
-        protected static ?int $sort = -2;
+    protected static ?int $sort = -2;
 
     protected static string $view = 'filament.widgets.credit';
 }
