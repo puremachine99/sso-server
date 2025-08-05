@@ -81,9 +81,13 @@ class AdminPanelProvider extends PanelProvider
                     ->shouldShowDeleteAccountForm(false)
                     ->shouldShowSanctumTokens(true)
                     ->shouldShowBrowserSessionsForm(true)
-                    ->shouldShowAvatarForm(true)
+                    ->shouldShowAvatarForm(
+                        true,
+                        directory: 'avatars', // jadi: storage/app/public/avatars
+                        rules: 'mimes:jpeg,png|max:1024'
+                    )
                     ->shouldRegisterNavigation(true),
-                    
+
             ])
             ->authMiddleware([
                 Authenticate::class,

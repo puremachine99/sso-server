@@ -2,18 +2,19 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Filament\Panel\Concerns\HasAvatars;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
+use Filament\Models\Contracts\HasAvatar;
+use Filament\Panel\Concerns\HasAvatars;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements HasAvatar
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, HasApiTokens, HasRoles, HasAvatars;
+
     protected $fillable = [
         'name',
         'email',
@@ -21,6 +22,7 @@ class User extends Authenticatable
         'source',
         'avatar_url',
     ];
+
     protected $hidden = [
         'password',
         'remember_token',
@@ -33,6 +35,7 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
     public function getFilamentAvatarUrl(): ?string
     {
         $avatarColumn = config('filament-edit-profile.avatar_column', 'avatar_url');
