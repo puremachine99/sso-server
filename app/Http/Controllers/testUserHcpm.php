@@ -76,7 +76,7 @@ class testUserHcpm extends Controller
                     'email' => $hcpm->email,
                     'username' => $hcpm->username ?? null,
                     'department_id' => $hcpm->department_id ?? null,
-                    'password' => bcrypt('12345678'),
+                    'password' => $hcpm->password,
                     'source' => 'synced user',
                 ]);
 
@@ -86,10 +86,9 @@ class testUserHcpm extends Controller
                 } else {
                     $user->syncRoles(['Smartnakama']);
                 }
-
-                $synced++;
+                $synced++; // count jumlah user yang berhasil disinkronkan
             } else {
-                $skipped++;
+                $skipped++; // count jumlah user yang tidak disinkronkan disekip
             }
         }
 
