@@ -82,6 +82,9 @@ class UserResource extends Resource
                     ->searchable(),
                 BadgeColumn::make('hcpm_status')
                     ->label('Status HCPM')
+                    ->getStateUsing(function ($record) {
+                        return $record->hcpm()?->status ?? 'Unknown';
+                    })
                     ->colors([
                         'success' => 'Active',
                         'warning' => 'On_Leave',
@@ -89,6 +92,7 @@ class UserResource extends Resource
                         'gray' => 'Unknown',
                     ])
                     ->sortable(),
+
 
 
                 BadgeColumn::make('source')
@@ -112,13 +116,14 @@ class UserResource extends Resource
             ])
             ->filters([
                 SelectFilter::make('hcpm_status')
-                    ->label('Status HCPM')
+                    ->label('HCPM Status')
                     ->options([
                         'Active' => 'Active',
                         'On_Leave' => 'On Leave',
                         'Terminated' => 'Terminated',
                         'Unknown' => 'Unknown',
                     ]),
+
 
                 SelectFilter::make('source')
                     ->label('Account Type')

@@ -23,7 +23,7 @@ class User extends Authenticatable implements HasAvatar
         'avatar_url',
         'hcpm_status', // pastikan ini ada di DB dan $fillable
     ];
-    protected $with = ['terminationDetails'];
+
     protected $hidden = [
         'password',
         'remember_token',

@@ -79,7 +79,7 @@ class testUserHcpm extends Controller
         $hcpmUsers = HcpmUser::with('terminationDetails')->get();
 
         foreach ($hcpmUsers as $hcpm) {
-            $status = $hcpm->status; // dari accessor getStatusAttribute()
+            $status = $hcpm->status; // err disini 0508,2025
 
             // Cari user berdasarkan email
             $user = User::where('email', $hcpm->email)->first();
