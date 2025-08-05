@@ -4,6 +4,7 @@ namespace App\Filament\Pages;
 
 use App\Models\User;
 use Filament\Forms;
+use Filament\Forms\Form;
 use Filament\Pages\Page;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Hash;
@@ -20,21 +21,25 @@ class EditProfile extends Page implements HasForms
     protected static ?int $navigationSort = 11;
     protected static ?string $navigationLabel = 'Account';
 
-    public ?string $password = null;
-    public ?string $password_confirmation = null;
-
-    // ✅ Ini penting untuk binding form ke model user login
-    protected function getFormModel():User
-    {
-        return auth()->user();
-    }
-
     public function mount(): void
     {
         $this->form->fill([
             'name' => auth()->user()->name,
             'email' => auth()->user()->email,
         ]);
+    }
+
+    protected function getFormModel(): User
+    {
+        return auth()->user();
+    }
+
+    // ✅ FIX INI: DEKLARASI form()
+    public function form(Form $form): Form
+    {
+        return $form
+            ->model($this->getFormModel())
+            ->schema($this->getFormSchema());
     }
 
     protected function getFormSchema(): array
@@ -55,7 +60,7 @@ class EditProfile extends Page implements HasForms
                 ->nullable()
                 ->minLength(8)
                 ->same('password_confirmation')
-                ->dehydrated(false)
+                ->dehydrated(false) // ❗ Tidak disimpan ke DB langsung
                 ->validationMessages([
                     'same' => 'Password dan konfirmasi harus sama.',
                     'min' => 'Password minimal 8 karakter.',
@@ -73,7 +78,7 @@ class EditProfile extends Page implements HasForms
         ];
     }
 
-    public function save()
+    public function save(): void
     {
         $data = $this->form->getState();
         $user = $this->getFormModel();
