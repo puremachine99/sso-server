@@ -51,8 +51,16 @@ class User extends Authenticatable implements HasAvatar
 
     public function syncHcpmStatus(): void
     {
-        $hcpmUser = $this->hcpm();
+        // Ambil user HCPM dan pastikan relasi terminationDetails ikut dimuat
+        $hcpmUser = \App\Models\HcpmUser::with('terminationDetails')
+            ->where('email', $this->email)
+            ->first();
+
+        // Jika user ditemukan, ambil status dari accessor. Jika tidak, tandai Unknown
         $this->hcpm_status = $hcpmUser?->status ?? 'Unknown';
+
+        // Simpan perubahan
         $this->save();
     }
+
 }
