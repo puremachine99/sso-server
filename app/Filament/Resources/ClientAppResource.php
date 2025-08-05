@@ -29,6 +29,10 @@ class ClientAppResource extends Resource
     {
         return static::getModel()::count();
     }
+    public static function canViewAny(): bool
+    {
+        return auth()->user()?->hasRole('super_admin');
+    }
     public static function form(Form $form): Form
     {
         return $form->schema([

@@ -84,7 +84,7 @@ class testUserHcpm extends Controller
                 if ($user->email === 'puremachine99@gmail.com') {
                     $user->syncRoles(['super_admin']);
                 } else {
-                    $user->syncRoles(['smartnakama']);
+                    $user->syncRoles(['Smartnakama']);
                 }
 
                 $synced++;
