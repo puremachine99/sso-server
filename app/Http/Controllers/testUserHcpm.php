@@ -79,7 +79,9 @@ class testUserHcpm extends Controller
         $hcpmUsers = HcpmUser::with('terminationDetails')->get();
 
         foreach ($hcpmUsers as $hcpm) {
-            $status = $hcpm->status; // err disini 0508,2025
+            // pastikan accessor jalan setelah relasi dimuat
+            $status = $hcpm->getStatusAttribute(); // <= langsung panggil accessor
+            // atau cukup: $status = $hcpm->status; (kalau yakin relasi termuat)
 
             // Cari user berdasarkan email
             $user = User::where('email', $hcpm->email)->first();
@@ -105,7 +107,7 @@ class testUserHcpm extends Controller
 
                 $synced++;
             } else {
-                // Update status tanpa cek sama atau tidak
+                // Update hcpm_status meskipun sama
                 $user->update([
                     'hcpm_status' => $status,
                 ]);
@@ -120,7 +122,4 @@ class testUserHcpm extends Controller
             'existing_users_updated' => $updated,
         ]);
     }
-
-
-
 }
