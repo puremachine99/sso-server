@@ -12,6 +12,7 @@ use Filament\Navigation\MenuItem;
 use Filament\Support\Colors\Color;
 use App\Filament\Pages\EditProfile;
 use App\Filament\Widgets\ClientAppList;
+use App\Livewire\CustomProfileComponent;
 use Filament\Http\Middleware\Authenticate;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -76,12 +77,16 @@ class AdminPanelProvider extends PanelProvider
                     ->setNavigationGroup('Group Profile')
                     ->setIcon('heroicon-o-user')
                     ->setSort(10)
-                    ->shouldShowEmailForm(true)                 
-                    ->shouldShowDeleteAccountForm(true)         
-                    ->shouldShowSanctumTokens(true)          
-                    ->shouldShowBrowserSessionsForm(true)       
-                    ->shouldShowAvatarForm(true)               
-                    ->shouldRegisterNavigation(true)            
+                    ->shouldShowEmailForm(true)
+                    ->shouldShowDeleteAccountForm(true)
+                    ->shouldShowSanctumTokens(true)
+                    ->shouldShowBrowserSessionsForm(true)
+                    ->shouldShowAvatarForm(true)
+                    ->shouldRegisterNavigation(true),
+                FilamentEditProfilePlugin::make()
+                    ->customProfileComponents([
+                        CustomProfileComponent::class,
+                    ]),
             ])
             ->authMiddleware([
                 Authenticate::class,
