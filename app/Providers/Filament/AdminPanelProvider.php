@@ -90,8 +90,9 @@ class AdminPanelProvider extends PanelProvider
                     )
                     ->shouldRegisterNavigation(true)
                     ->customProfileComponents([
-                        MyCustomProfileComponent::class
-                    ]),
+                        \App\Filament\Pages\MyCustomProfileComponent::class,
+                    ])
+                ,
 
             ])
             ->authMiddleware([
