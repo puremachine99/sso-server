@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use Auth;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\Widgets;
@@ -75,13 +76,13 @@ class AdminPanelProvider extends PanelProvider
                 FilamentShieldPlugin::make(),
                 FilamentEditProfilePlugin::make()
                     ->slug('my-profile')
-                    ->setTitle('My Profile')
+                    ->setTitle(Auth::user()->name)
                     ->setNavigationLabel('My Profile')
                     ->setNavigationGroup('Group Profile')
                     ->setIcon('heroicon-o-user')
                     ->setSort(10)
                     ->shouldRegisterNavigation(true)
-                    ->shouldShowEditProfileForm(false)
+                    ->shouldShowEditProfileForm(fn() => auth()->user()?->source === 'manual')
                     ->shouldShowEmailForm(false)
                     ->shouldShowDeleteAccountForm(false)
                     ->shouldShowSanctumTokens(true)
