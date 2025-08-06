@@ -90,8 +90,7 @@ class AdminPanelProvider extends PanelProvider
                         rules: 'mimes:jpeg,png|max:1024'
                     )
                     ->shouldRegisterNavigation(true)
-                    ->customProfileComponents([
-                    ]),
+                    ,
 
             ])
             ->authMiddleware([
