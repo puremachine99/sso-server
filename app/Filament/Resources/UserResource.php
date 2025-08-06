@@ -132,10 +132,7 @@ class UserResource extends Resource
 
                 SelectFilter::make('roles')
                     ->label('Role')
-                    ->relationship('roles', 'name')
-                    ->searchable(),
-
-
+                    ->relationship('roles', 'name'),
             ])
             ->actions([
                 // Tables\Actions\Action::make('grantSuperadmin')
