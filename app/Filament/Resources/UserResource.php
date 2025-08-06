@@ -126,7 +126,7 @@ class UserResource extends Resource
                 SelectFilter::make('source')
                     ->label('Account Type')
                     ->options([
-                        'portal' => 'Manual',
+                        'manual' => 'Manual',
                         'synced user' => 'Synced User',
                     ]),
 
