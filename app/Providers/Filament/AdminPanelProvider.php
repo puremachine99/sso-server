@@ -87,7 +87,10 @@ class AdminPanelProvider extends PanelProvider
                         directory: 'avatars', // jadi: storage/app/public/avatars
                         rules: 'mimes:jpeg,png|max:1024'
                     )
-                    ->shouldRegisterNavigation(true),
+                    ->shouldRegisterNavigation(true)
+                    ->customProfileComponents([
+                        \App\Livewire\MyCustomProfileComponent::class
+                    ]),
 
             ])
             ->authMiddleware([
