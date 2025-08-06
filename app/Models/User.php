@@ -22,6 +22,7 @@ class User extends Authenticatable implements HasAvatar
         'source',
         'avatar_url',
         'hcpm_status', // pastikan ini ada di DB dan $fillable
+        'custom_fields',
     ];
 
     protected $hidden = [
