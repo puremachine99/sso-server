@@ -36,20 +36,30 @@ class User extends Authenticatable implements HasAvatar
             'password' => 'hashed',
         ];
     }
-    public function getJobTitlesStrukturalAttribute(): ?string
-    {
-        return $this->jobTitles
-            ->firstWhere('jenis_jabatan', 'Struktural')
-                ?->nama_jabatan;
-    }
+    // public function getJobTitlesStrukturalAttribute(): ?string
+    // {
+    //     return $this->jobTitles
+    //         ->firstWhere('jenis_jabatan', 'Struktural')
+    //             ?->nama_jabatan;
+    // }
 
-    public function getJobTitlesFungsionalAttribute(): ?string
-    {
-        return $this->jobTitles
-            ->firstWhere('jenis_jabatan', 'Fungsional')
-                ?->nama_jabatan;
-    }
-
+    // public function getJobTitlesFungsionalAttribute(): ?string
+    // {
+    //     return $this->jobTitles
+    //         ->firstWhere('jenis_jabatan', 'Fungsional')
+    //             ?->nama_jabatan;
+    // }
+    // public function jobTitles()
+    // {
+    //     return $this->setConnection('hcpm')
+    //         ->belongsToMany(
+    //             \App\Models\JobTitle::class,
+    //             'user_job_title',
+    //             'user_id',
+    //             'job_title_id'
+    //         )
+    //         ->withTimestamps(); // 🚫 jangan pakai withPivot kalau kolomnya gak ada
+    // }
     public function getFilamentAvatarUrl(): ?string
     {
         $avatarColumn = config('filament-edit-profile.avatar_column', 'avatar_url');
@@ -75,16 +85,5 @@ class User extends Authenticatable implements HasAvatar
             $this->save();
         }
     }
-    public function jobTitles()
-    {
-        return $this->setConnection('hcpm') // koneksi lintas DB
-            ->belongsToMany(
-                \App\Models\JobTitle::class,
-                'user_job_title', // nama pivot
-                'user_id',
-                'job_title_id'
-            )
-            ->withPivot(['jenis_jabatan']) // opsional
-            ->withTimestamps();
-    }
+
 }
