@@ -76,7 +76,7 @@ class AdminPanelProvider extends PanelProvider
                 FilamentShieldPlugin::make(),
                 FilamentEditProfilePlugin::make()
                     ->slug('my-profile')
-                    ->setTitle(fn() => auth()->user()->name)
+                    ->setTitle(fn () => auth()->check() ? auth()->user()->name : 'Profil Saya')
                     ->setNavigationLabel('My Profile')
                     ->setNavigationGroup('Group Profile')
                     ->setIcon('heroicon-o-user')
