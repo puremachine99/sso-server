@@ -45,7 +45,8 @@ class UserResource extends Resource
                 ->email()
                 ->required()
                 ->maxLength(255)
-                ->unique(ignoreRecord: true),
+                ->unique(ignoreRecord: true)
+                ->disabledOn('edit'),
 
             TextInput::make('password')
                 ->label('Password')
