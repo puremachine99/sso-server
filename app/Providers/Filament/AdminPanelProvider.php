@@ -76,13 +76,16 @@ class AdminPanelProvider extends PanelProvider
                 FilamentShieldPlugin::make(),
                 FilamentEditProfilePlugin::make()
                     ->slug('my-profile')
-                    ->setTitle(fn () => auth()->check() ? auth()->user()->name : 'Profil Saya')
+                    ->setTitle(fn() => auth()->check() ? auth()->user()->name : 'Profil Saya')
                     ->setNavigationLabel('My Profile')
                     ->setNavigationGroup('Group Profile')
                     ->setIcon('heroicon-o-user')
                     ->setSort(10)
                     ->shouldRegisterNavigation(true)
-                    ->shouldShowEditProfileForm(fn() => auth()->user()?->source === 'manual')
+                    ->shouldShowEditProfileForm(
+                        auth()->check() && auth()->user()?->source === 'manual'
+                    )
+
                     ->shouldShowEmailForm(false)
                     ->shouldShowDeleteAccountForm(false)
                     ->shouldShowSanctumTokens(true)
