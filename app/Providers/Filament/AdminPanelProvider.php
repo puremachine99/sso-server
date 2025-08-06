@@ -2,7 +2,6 @@
 
 namespace App\Providers\Filament;
 
-use App\Filament\Widgets\UserWelcomeWidget;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\Widgets;
@@ -15,7 +14,9 @@ use App\Filament\Pages\EditProfile;
 use App\Filament\Widgets\ClientAppList;
 use App\Livewire\CustomProfileComponent;
 use Filament\Http\Middleware\Authenticate;
+use App\Filament\Widgets\UserWelcomeWidget;
 use Illuminate\Session\Middleware\StartSession;
+use App\Filament\Pages\MyCustomProfileComponent;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Filament\Http\Middleware\AuthenticateSession;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
@@ -89,7 +90,7 @@ class AdminPanelProvider extends PanelProvider
                     )
                     ->shouldRegisterNavigation(true)
                     ->customProfileComponents([
-                        \App\Livewire\MyCustomProfileComponent::class
+                        MyCustomProfileComponent::class
                     ]),
 
             ])
