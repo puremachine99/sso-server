@@ -82,9 +82,10 @@ class AdminPanelProvider extends PanelProvider
                     ->setIcon('heroicon-o-user')
                     ->setSort(10)
                     ->shouldRegisterNavigation(true)
-                    ->shouldShowEditProfileForm(
-                         auth()->user()?->source && strtolower(auth()->user()->source) === 'manual'
-                    )
+                    // ->shouldShowEditProfileForm(
+                    //      auth()->user()?->source && strtolower(auth()->user()->source) === 'manual'
+                    // )
+                    ->shouldShowEditProfileForm(true)
 
                     ->shouldShowEmailForm(false)
                     ->shouldShowDeleteAccountForm(false)
