@@ -34,6 +34,7 @@ class User extends Authenticatable implements HasAvatar
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'custom_fields' => 'array',
         ];
     }
     // public function getJobTitlesStrukturalAttribute(): ?string
