@@ -4,7 +4,7 @@ return [
     'avatar_column' => 'avatar_url',
     'disk' => env('FILESYSTEM_DISK', 'public'),
     'visibility' => 'public',
-'show_custom_fields' => true,
+    'show_custom_fields' => true,
     'custom_fields' => [
         'custom_field_1' => [
             'type' => 'text', // required
@@ -58,7 +58,7 @@ return [
             'hint' => '', // optional
         ],
         'custom_field_4' => [
-            'type' =>'textarea', // required
+            'type' => 'textarea', // required
             'label' => 'Custom Textarea 4', // required
             'placeholder' => 'Textarea', // optional
             'id' => 'custom-field-4', // optional
