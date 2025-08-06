@@ -85,7 +85,6 @@ class AdminPanelProvider extends PanelProvider
                     ->shouldShowEditProfileForm(
                         auth()->check() && auth()->user()?->source === 'Manual'
                     )
-
                     ->shouldShowEmailForm(false)
                     ->shouldShowDeleteAccountForm(false)
                     ->shouldShowSanctumTokens(true)

@@ -45,7 +45,7 @@
                 <th>#</th>
                 <th>Email</th>
                 <th>Nama</th>
-                <th>Username</th>
+                <th>Acc Type</th>
                 <th>Roles</th>
             </tr>
         </thead>
@@ -55,7 +55,7 @@
                     <td>{{ $i + 1 }}</td>
                     <td>{{ $user->email }}</td>
                     <td>{{ $user->name }}</td>
-                    <td>{{ $user->username }}</td>
+                    <td>{{ $user->source }}</td>
                     <td>
                         @if ($user->roles->isEmpty())
                             <em style="color:#999;">Tidak ada</em>
