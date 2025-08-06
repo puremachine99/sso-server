@@ -3,59 +3,56 @@
 namespace App\Livewire;
 
 use Filament\Forms;
-use Livewire\Component;
-use Filament\Forms\Form;
-use Forms\Components\TextEntry;
-use Illuminate\Contracts\View\View;
-use Illuminate\Support\Facades\Auth;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Forms\Form;
 use Filament\Forms\Concerns\InteractsWithForms;
-use Joaopaulolndev\FilamentEditProfile\Concerns\HasSort;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\ViewField;
+use Illuminate\Support\Facades\Auth;
+use Livewire\Component;
 
 class CustomProfileComponent extends Component implements HasForms
 {
     use InteractsWithForms;
-    use HasSort;
 
     public ?array $data = [];
-
-    protected static int $sort = 0;
 
     public function mount(): void
     {
         $user = Auth::user();
+
         $this->data = [
             'name' => $user->name,
             'email' => $user->email,
-            'joined_at' => $user->created_at->format('Y‑m‑d'),
-            // tambahkan custom field profil kalau perlu
-            'bio' => $user->bio ?? '—',
+            'role' => optional($user->role)->name ?? 'Manual',
         ];
+
+        $this->form->fill($this->data);
     }
 
     public function form(Form $form): Form
     {
         return $form
             ->schema([
-                Section::make('Profil Saya')
+                Section::make('Profil Pengguna')
                     ->schema([
-                        TextEntry::make('name')->label('Nama'),
-                        TextEntry::make('email')->label('Email'),
-                        TextEntry::make('joined_at')->label('Tanggal Bergabung'),
-                        TextEntry::make('bio')->label('Bio'),
-                    ])
+                        ViewField::make('name')
+                            ->view('components.display-field')
+                            ->viewData(['label' => 'Nama Lengkap']),
+
+                        ViewField::make('email')
+                            ->view('components.display-field')
+                            ->viewData(['label' => 'Email']),
+
+                        ViewField::make('role')
+                            ->view('components.display-field')
+                            ->viewData(['label' => 'Peran']),
+                    ]),
             ])
             ->statePath('data');
     }
 
-
-    public function save(): void
-    {
-        $data = $this->form->getState();
-    }
-
-    public function render(): View
+    public function render()
     {
         return view('livewire.custom-profile-component');
     }
