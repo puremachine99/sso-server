@@ -2,23 +2,24 @@
 
 namespace App\Filament\Resources;
 
-use App\Models\User;
 use Filament\Forms;
+use App\Models\User;
 use Filament\Tables;
+use App\Models\HcpmUser;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
-use Illuminate\Support\Facades\Hash;
 use Filament\Resources\Resource;
+use Illuminate\Support\Facades\Hash;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\BadgeColumn;
-use App\Filament\Resources\UserResource\Pages;
 use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
+use App\Filament\Resources\UserResource\Pages;
 
 class UserResource extends Resource
 {
@@ -144,35 +145,36 @@ class UserResource extends Resource
                     ->relationship('roles', 'name'),
             ])
             ->actions([
-                // Tables\Actions\Action::make('grantSuperadmin')
-                //     ->label('Grant Superadmin')
-                //     ->icon('heroicon-o-key')
-                //     ->color('success')
-                //     ->requiresConfirmation()
-                //     ->visible(fn($record) => !$record->hasRole('super_admin'))
-                //     ->action(fn($record) => $record->assignRole('super_admin'))
-                //     ->after(
-                //         fn($record) => Notification::make()
-                //             ->title('Role Granted')
-                //             ->body("{$record->name} is now a Superadmin.")
-                //             ->success()
-                //             ->send()
-                //     ),
+                Action::make('reset_password')
+                    ->label('Reset Password')
+                    ->icon('heroicon-o-key')
+                    ->color('danger')
+                    ->requiresConfirmation()
+                    ->modalHeading('Reset Password')
+                    ->modalDescription('Reset password user ini ke 12345678 di kedua sistem (Portal & HCPM)?')
+                    ->modalSubmitActionLabel('Reset')
+                    ->action(function ($record) {
+                        $newPassword = '12345678';
+                        $hashed = Hash::make($newPassword);
 
-                // Tables\Actions\Action::make('revokeSuperadmin')
-                //     ->label('Revoke Superadmin')
-                //     ->icon('heroicon-o-lock-closed')
-                //     ->color('danger')
-                //     ->requiresConfirmation()
-                //     ->visible(fn($record) => $record->hasRole('super_admin'))
-                //     ->action(fn($record) => $record->removeRole('super_admin'))
-                //     ->after(
-                //         fn($record) => Notification::make()
-                //             ->title('Role Revoked')
-                //             ->body("Superadmin role removed from {$record->name}.")
-                //             ->warning()
-                //             ->send()
-                //     ),
+                        // Update di portal
+                        $record->update([
+                            'password' => $hashed,
+                        ]);
+
+                        // Update di HCPM jika ditemukan by email
+                        $hcpmUser = HcpmUser::where('email', $record->email)->first();
+                        if ($hcpmUser) {
+                            $hcpmUser->update([
+                                'password' => $hashed,
+                            ]);
+                        }
+
+                        Notification::make()
+                            ->title('Password berhasil direset')
+                            ->success()
+                            ->send();
+                    }),
             ])
             ->bulkActions([
                 BulkActionGroup::make([
