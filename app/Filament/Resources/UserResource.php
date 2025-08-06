@@ -106,6 +106,15 @@ class UserResource extends Resource
                         'warning' => 'Manual',       // ✅ Kuning
                         'gray' => 'Unknown', // Opsional (jika source null atau typo)
                     ]),
+                TextColumn::make('job_titles_struktural')
+                    ->label('Jabatan Struktural')
+                    ->sortable()
+                    ->toggleable(),
+
+                TextColumn::make('job_titles_fungsional')
+                    ->label('Jabatan Fungsional')
+                    ->sortable()
+                    ->toggleable(),
 
                 TextColumn::make('created_at')
                     ->label('Created')
