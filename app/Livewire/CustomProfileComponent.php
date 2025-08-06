@@ -38,7 +38,11 @@ class CustomProfileComponent extends Component implements HasForms
                     ->schema([
                         ViewField::make('name')
                             ->view('components.display-field')
-                            ->viewData(['label' => 'Nama Lengkap']),
+                            ->viewData(fn() => [
+                                'label' => 'Nama Lengkap',
+                                'value' => $this->data['name'] ?? null,
+                            ]),
+
 
                         ViewField::make('email')
                             ->view('components.display-field')
