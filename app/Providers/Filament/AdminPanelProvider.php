@@ -83,9 +83,9 @@ class AdminPanelProvider extends PanelProvider
                     ->setSort(10)
                     ->shouldRegisterNavigation(true)
                     ->shouldShowEditProfileForm(
-                         auth()->user()?->source && strtolower(auth()->user()->source) === 'manual'
+                        auth()->check() && auth()->user()?->source && strtolower(auth()->user()->source) === 'manual'
                     )
-
+                    
                     ->shouldShowEmailForm(false)
                     ->shouldShowDeleteAccountForm(false)
                     ->shouldShowSanctumTokens(true)
