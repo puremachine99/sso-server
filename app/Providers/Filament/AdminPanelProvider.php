@@ -85,7 +85,7 @@ class AdminPanelProvider extends PanelProvider
                     // ->shouldShowEditProfileForm(
                     //      auth()->user()?->source && strtolower(auth()->user()->source) === 'manual'
                     // )
-                    ->shouldShowEditProfileForm(true)
+                    ->shouldShowEditProfileForm(fn () => auth()->check() && auth()->user()->source === 'manual')
 
                     ->shouldShowEmailForm(false)
                     ->shouldShowDeleteAccountForm(false)
