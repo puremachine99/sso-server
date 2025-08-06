@@ -6,9 +6,11 @@ use Filament\Forms;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\TextEntry;
 use Filament\Forms\Form;
-use Livewire\Component;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Auth;
+use Livewire\Component;
 use Joaopaulolndev\FilamentEditProfile\Concerns\HasSort;
 
 class CustomProfileComponent extends Component implements HasForms
@@ -22,26 +24,27 @@ class CustomProfileComponent extends Component implements HasForms
 
     public function mount(): void
     {
-        $this->form->fill();
+        $this->form->fill([
+            'name' => Auth::user()->name,
+            'email' => Auth::user()->email,
+            'role' => Auth::user()->role?->name, // jika ada relasi role
+        ]);
     }
 
     public function form(Form $form): Form
     {
         return $form
             ->schema([
-                Section::make('Custom component')
+                Section::make('Informasi Akun')
                     ->aside()
-                    ->description('Custom component description')
+                    ->description('Berikut detail akun Anda.')
                     ->schema([
-                        //
+                        TextEntry::make('name')->label('Nama Lengkap'),
+                        TextEntry::make('email')->label('Email'),
+                        TextEntry::make('role')->label('Peran')->default('Manual'), // fallback jika null
                     ]),
             ])
             ->statePath('data');
-    }
-
-    public function save(): void
-    {
-        $data = $this->form->getState();
     }
 
     public function render(): View
