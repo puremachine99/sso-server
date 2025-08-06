@@ -138,6 +138,13 @@ class AuthController extends Controller
             ]);
         }
 
+        // cek status 
+        if ($user->hcpm()?->status === 'Terminated') {
+            return back()->withErrors([
+                'email' => 'Akun Anda telah dinonaktifkan.',
+            ]);
+        }
+
         Auth::login($user);
         $request->session()->regenerate();
 
