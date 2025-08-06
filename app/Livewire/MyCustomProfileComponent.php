@@ -1,15 +1,10 @@
 <?php
+namespace App\Filament\Pages;
 
-namespace App\Livewire;
+use Filament\Pages\Page;
 
-use Livewire\Component;
-
-class MyCustomProfileComponent extends Component
+class MyCustomProfileComponent extends Page
 {
-    public function render()
-    {
-        return view('livewire.my-custom-profile-component', [
-            'user' => auth()->user(),
-        ]);
-    }
+    protected static ?string $navigationIcon = null;
+    protected static string $view = 'filament.pages.my-custom-profile-component';
 }
