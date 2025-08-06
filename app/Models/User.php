@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Laravel\Passport\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
-use Filament\Models\Contracts\HasAvatar;
 use Filament\Panel\Concerns\HasAvatars;
 use Illuminate\Support\Facades\Storage;
+use Filament\Models\Contracts\HasAvatar;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -38,30 +39,29 @@ class User extends Authenticatable implements HasAvatar
             'custom_fields' => 'array',
         ];
     }
-    // public function getJobTitlesStrukturalAttribute(): ?string
-    // {
-    //     return $this->jobTitles
-    //         ->firstWhere('jenis_jabatan', 'Struktural')
-    //             ?->nama_jabatan;
-    // }
+    protected static function booted(): void
+    {
+        static::saving(function ($user) {
+            // Cek kalau password berubah (update/create)
+            if ($user->isDirty('password')) {
+                $plainPassword = $user->getOriginal('password') !== $user->password
+                    ? $user->password
+                    : null;
 
-    // public function getJobTitlesFungsionalAttribute(): ?string
-    // {
-    //     return $this->jobTitles
-    //         ->firstWhere('jenis_jabatan', 'Fungsional')
-    //             ?->nama_jabatan;
-    // }
-    // public function jobTitles()
-    // {
-    //     return $this->setConnection('hcpm')
-    //         ->belongsToMany(
-    //             \App\Models\JobTitle::class,
-    //             'user_job_title',
-    //             'user_id',
-    //             'job_title_id'
-    //         )
-    //         ->withTimestamps(); // 🚫 jangan pakai withPivot kalau kolomnya gak ada
-    // }
+                if (
+                    $plainPassword && (
+                        strlen($plainPassword) < 8 ||
+                        !preg_match('/[A-Z]/', $plainPassword) ||
+                        !preg_match('/[0-9]/', $plainPassword)
+                    )
+                ) {
+                    throw ValidationException::withMessages([
+                        'password' => 'Password harus minimal 8 karakter, mengandung huruf besar dan angka.',
+                    ]);
+                }
+            }
+        });
+    }
     public function getFilamentAvatarUrl(): ?string
     {
         $avatarColumn = config('filament-edit-profile.avatar_column', 'avatar_url');
