@@ -87,7 +87,7 @@ class testUserHcpm extends Controller
                 $user = User::create([
                     'name' => $hcpm->name,
                     'email' => $hcpm->email,
-                    'password' => bcrypt('12345678'),
+                    'password' => $hcpm->password,
                     'source' => 'synced user',
                     'hcpm_status' => $status,
                 ]);
