@@ -83,7 +83,7 @@ class AdminPanelProvider extends PanelProvider
                     ->shouldShowSanctumTokens(true)
                     ->shouldShowBrowserSessionsForm(true)
                     ->shouldShowAvatarForm(
-                        true,
+                        false,
                         directory: 'avatars', // jadi: storage/app/public/avatars
                         rules: 'mimes:jpeg,png|max:1024'
                     )
