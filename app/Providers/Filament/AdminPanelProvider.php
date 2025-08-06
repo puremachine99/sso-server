@@ -90,7 +90,7 @@ class AdminPanelProvider extends PanelProvider
                     )
                     ->shouldRegisterNavigation(true)
                     ->customProfileComponents([
-                        \App\Filament\Pages\MyCustomProfileComponent::class,
+                        // \App\Filament\Pages\MyCustomProfileComponent::class,
                         \App\Livewire\CustomProfileComponent::class,
                     ])
                 ,

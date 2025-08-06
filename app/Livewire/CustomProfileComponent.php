@@ -3,14 +3,14 @@
 namespace App\Livewire;
 
 use Filament\Forms;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\TextEntry;
+use Livewire\Component;
 use Filament\Forms\Form;
+use Forms\Components\TextEntry;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
-use Livewire\Component;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Forms\Concerns\InteractsWithForms;
 use Joaopaulolndev\FilamentEditProfile\Concerns\HasSort;
 
 class CustomProfileComponent extends Component implements HasForms
@@ -24,27 +24,35 @@ class CustomProfileComponent extends Component implements HasForms
 
     public function mount(): void
     {
-        $this->form->fill([
-            'name' => Auth::user()->name,
-            'email' => Auth::user()->email,
-            'role' => Auth::user()->role?->name, // jika ada relasi role
-        ]);
+        $user = Auth::user();
+        $this->data = [
+            'name' => $user->name,
+            'email' => $user->email,
+            'joined_at' => $user->created_at->format('Y‑m‑d'),
+            // tambahkan custom field profil kalau perlu
+            'bio' => $user->bio ?? '—',
+        ];
     }
 
     public function form(Form $form): Form
     {
         return $form
             ->schema([
-                Section::make('Informasi Akun')
-                    ->aside()
-                    ->description('Berikut detail akun Anda.')
+                Section::make('Profil Saya')
                     ->schema([
-                        TextEntry::make('name')->label('Nama Lengkap'),
+                        TextEntry::make('name')->label('Nama'),
                         TextEntry::make('email')->label('Email'),
-                        TextEntry::make('role')->label('Peran')->default('Manual'), // fallback jika null
-                    ]),
+                        TextEntry::make('joined_at')->label('Tanggal Bergabung'),
+                        TextEntry::make('bio')->label('Bio'),
+                    ])
             ])
             ->statePath('data');
+    }
+
+
+    public function save(): void
+    {
+        $data = $this->form->getState();
     }
 
     public function render(): View
