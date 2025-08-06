@@ -45,6 +45,7 @@
                 <th>#</th>
                 <th>Email</th>
                 <th>Nama</th>
+                <th>Status</th>
                 <th>Acc Type</th>
                 <th>Roles</th>
             </tr>
@@ -55,6 +56,7 @@
                     <td>{{ $i + 1 }}</td>
                     <td>{{ $user->email }}</td>
                     <td>{{ $user->name }}</td>
+                    <td>{{ $user->hcpm_status }}</td>
                     <td>{{ $user->source }}</td>
                     <td>
                         @if ($user->roles->isEmpty())
