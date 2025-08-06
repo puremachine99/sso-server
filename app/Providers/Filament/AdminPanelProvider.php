@@ -81,9 +81,7 @@ class AdminPanelProvider extends PanelProvider
                     ->setIcon('heroicon-o-user')
                     ->setSort(10)
                     ->shouldRegisterNavigation(true)
-
-                    // === Fitur plugin yang ditampilkan ===
-                    ->shouldShowProfileForm(fn() => auth()->user()?->source === 'manual') // 👈 Ini kunci
+                    ->shouldShowEditProfileForm(false)
                     ->shouldShowEmailForm(false)
                     ->shouldShowDeleteAccountForm(false)
                     ->shouldShowSanctumTokens(true)
