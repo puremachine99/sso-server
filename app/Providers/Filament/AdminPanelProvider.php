@@ -80,17 +80,19 @@ class AdminPanelProvider extends PanelProvider
                     ->setNavigationGroup('Group Profile')
                     ->setIcon('heroicon-o-user')
                     ->setSort(10)
+                    ->shouldRegisterNavigation(true)
+
+                    // === Fitur plugin yang ditampilkan ===
+                    ->shouldShowProfileForm(fn() => auth()->user()?->source === 'manual') // 👈 Ini kunci
                     ->shouldShowEmailForm(false)
                     ->shouldShowDeleteAccountForm(false)
                     ->shouldShowSanctumTokens(true)
                     ->shouldShowBrowserSessionsForm(true)
                     ->shouldShowAvatarForm(
                         false,
-                        directory: 'avatars', // jadi: storage/app/public/avatars
+                        directory: 'avatars',
                         rules: 'mimes:jpeg,png|max:1024'
-                    )
-                    ->shouldRegisterNavigation(true)
-                    ,
+                    ),
 
             ])
             ->authMiddleware([
