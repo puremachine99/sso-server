@@ -91,7 +91,7 @@ class AdminPanelProvider extends PanelProvider
                     )
                     ->shouldRegisterNavigation(true)
                     ->customProfileComponents([
-                        ProfileComponent::class,
+                        \App\Filament\Pages\ProfileWrapperPage::class,
                     ]),
 
             ])
