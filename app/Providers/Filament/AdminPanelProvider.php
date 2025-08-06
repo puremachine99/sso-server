@@ -72,7 +72,6 @@ class AdminPanelProvider extends PanelProvider
                 DispatchServingFilamentEvent::class,
             ])
             ->plugins([
-                FilamentShieldPlugin::make(),
                 FilamentEditProfilePlugin::make()
                     ->slug('my-profile')
                     ->setTitle('My Profile')
@@ -80,17 +79,29 @@ class AdminPanelProvider extends PanelProvider
                     ->setNavigationGroup('Group Profile')
                     ->setIcon('heroicon-o-user')
                     ->setSort(10)
+                    ->canAccess(fn() => auth()->check())
                     ->shouldRegisterNavigation(true)
-                    ->shouldShowEditProfileForm(false)
-                    ->shouldShowEmailForm(false)
-                    ->shouldShowDeleteAccountForm(false)
+
+                    // ✅ Hanya user dengan source 'manual' bisa edit nama
+                    ->shouldShowProfileForm(fn() => auth()->user()?->source === 'manual')
+
+                    // ✅ Email bisa diedit
+                    ->shouldShowEmailForm(true)
+
+                    // ✅ Avatar upload enable
+                    ->shouldShowAvatarForm(true, directory: 'avatars', rules: 'mimes:jpeg,png|max:1024')
+
+                    // ✅ Show tokens, sessions
                     ->shouldShowSanctumTokens(true)
                     ->shouldShowBrowserSessionsForm(true)
-                    ->shouldShowAvatarForm(
-                        false,
-                        directory: 'avatars',
-                        rules: 'mimes:jpeg,png|max:1024'
-                    ),
+
+                    // ❌ Delete account tidak boleh
+                    ->shouldShowDeleteAccountForm(false)
+
+                    // ❌ Custom component, bisa kosong kalau gak dipakai
+                    ->customProfileComponents([]),
+
+
 
             ])
             ->authMiddleware([
