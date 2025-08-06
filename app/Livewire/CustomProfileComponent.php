@@ -16,7 +16,10 @@ class CustomProfileComponent extends Component implements HasForms
     use InteractsWithForms;
 
     public ?array $data = [];
-
+    public function getSort()
+    {
+        return null;
+    }
     public function mount(): void
     {
         $user = Auth::user();
