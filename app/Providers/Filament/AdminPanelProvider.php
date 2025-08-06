@@ -9,6 +9,7 @@ use GuzzleHttp\Client;
 use Filament\PanelProvider;
 use App\Filament\Widgets\credit;
 use Filament\Navigation\MenuItem;
+use App\Livewire\ProfileComponent;
 use Filament\Support\Colors\Color;
 use App\Filament\Pages\EditProfile;
 use App\Filament\Widgets\ClientAppList;
@@ -90,10 +91,8 @@ class AdminPanelProvider extends PanelProvider
                     )
                     ->shouldRegisterNavigation(true)
                     ->customProfileComponents([
-                        // \App\Filament\Pages\MyCustomProfileComponent::class,
-                        \App\Livewire\CustomProfileComponent::class,
-                    ])
-                ,
+                        ProfileComponent::class,
+                    ]),
 
             ])
             ->authMiddleware([
