@@ -132,16 +132,13 @@ class AuthController extends Controller
 
         $user = User::where('email', $request->email)->first();
 
-        if (!$user || !Hash::check($request->password, $user->password)) {
+        if (
+            !$user ||
+            !Hash::check($request->password, $user->password) ||
+            $user->hcpm_status === 'Terminated'
+        ) {
             return back()->withErrors([
-                'email' => 'Login gagal. Cek email dan password.',
-            ]);
-        }
-
-        // cek status 
-        if ($user->hcpm()?->status === 'Terminated') {
-            return back()->withErrors([
-                'email' => 'Akun Anda telah dinonaktifkan.',
+                'email' => 'Login gagal. Cek email, password, dan status akun Anda.',
             ]);
         }
 
