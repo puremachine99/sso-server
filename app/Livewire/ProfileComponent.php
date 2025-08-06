@@ -41,25 +41,37 @@ class ProfileComponent extends Component implements HasForms
                 Section::make('Profil Pengguna')
                     ->schema([
                         $isManual
-                            ? TextInput::make('name')->label('Nama Lengkap')->disabled()
-                            : ViewField::make('name')
-                                ->label('Nama Lengkap')
-                                ->view('components.display-field')
-                                ->viewData(['value' => $this->data['name']]),
+                        ? TextInput::make('name')
+                            ->label('Nama Lengkap')
+                            ->disabled()
+                        : ViewField::make('name')
+                            ->label('Nama Lengkap')
+                            ->view('components.display-field')
+                            ->viewData([
+                                'label' => 'Nama Lengkap',
+                                'value' => $this->data['name'] ?? '',
+                            ]),
 
                         ViewField::make('email')
                             ->label('Email')
                             ->view('components.display-field')
-                            ->viewData(['value' => $this->data['email']]),
+                            ->viewData([
+                                'label' => 'Email',
+                                'value' => $this->data['email'] ?? '',
+                            ]),
 
                         ViewField::make('role')
                             ->label('Peran')
                             ->view('components.display-field')
-                            ->viewData(['value' => $this->data['role']]),
+                            ->viewData([
+                                'label' => 'Peran',
+                                'value' => $this->data['role'] ?? '',
+                            ]),
                     ])
             ])
             ->statePath('data');
     }
+
 
     public function render()
     {
