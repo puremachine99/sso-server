@@ -76,10 +76,9 @@ class UserResource extends Resource
 
                 TextColumn::make('roles')
                     ->label('Roles')
-                    ->getStateUsing(function ($record) {
-                        return $record->roles->pluck('name')->implode(', ');
-                    })
-                    ->searchable(),
+                    ->getStateUsing(fn($record) => $record->roles->pluck('name')->implode(', '))
+                    ->toggleable(), // opsional
+
                 BadgeColumn::make('hcpm_status')
                     ->label('Status HCPM')
                     ->getStateUsing(function ($record) {
