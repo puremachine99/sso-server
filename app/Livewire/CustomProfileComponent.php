@@ -9,16 +9,18 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\ViewField;
 use Illuminate\Support\Facades\Auth;
+use Joaopaulolndev\FilamentEditProfile\Concerns\HasSort;
 use Livewire\Component;
 
 class CustomProfileComponent extends Component implements HasForms
 {
-    use InteractsWithForms;
+    use InteractsWithForms, HasSort;
 
     public ?array $data = [];
-    public function getSort()
+
+    public static function getSort(): int
     {
-        return null;
+        return 0; // semakin kecil, posisi semakin atas
     }
     public function mount(): void
     {
