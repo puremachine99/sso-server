@@ -1,10 +1,11 @@
 <?php
 
-use App\Http\Controllers\testUserHcpm;
+use App\Mail\TestMailerSend;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\testUserHcpm;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PasswordResetController;
-use Illuminate\Support\Facades\Mail;
 
 
 // Redirect '/' ke login jika belum login, atau ke dashboard jika sudah login
@@ -25,7 +26,7 @@ Route::get('/login', function () {
 Route::get('/login', fn() => redirect('/admin/login'));
 Route::get('/dashboard/login', fn() => redirect('/admin/login'));
 Route::get('/admin/login', [AuthController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [AuthController::class, 'login']); 
+Route::post('/login', [AuthController::class, 'login']);
 // Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1'); // 5 attempts per minute
 Route::get('/logout', [AuthController::class, 'logout']);
 Route::get('/logout-all', [AuthController::class, 'logoutAll'])->name('logout-all');
@@ -45,5 +46,8 @@ Route::prefix('test')->group(function () {
     Route::get('/set-su/{email}', [TestUserHcpm::class, 'setSuperAdmin'])->name('portal.set-su');
     Route::get('/reset/{email}', [TestUserHcpm::class, 'resetPasswordToDefault'])->name('portal.reset');
     Route::get('/sync-hcpm', [TestUserHcpm::class, 'syncToPortal'])->name('test.hcpm.sync');
-
+    Route::get('/email', function () {
+        Mail::to('puremachine99@gmail.com')->send(new TestMailerSend());
+        return 'Email test terkirim!';
+    });
 });

@@ -9,6 +9,8 @@ class HcpmSyncService
 {
     public function syncAll(): array
     {
+        // mlsn.b47603a2e4c0d278f73f8ce5c6127b579cd4fd3df792736dd6a23d0d8bd6f91b
+        ini_set('max_execution_time', 300); // 5 menit
         $synced = 0;
         $updated = 0;
 
