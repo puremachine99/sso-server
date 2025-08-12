@@ -20,6 +20,14 @@
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
                     },
+                    colors: {
+                        primary: {
+                            50: '#f0f5ff',
+                            100: '#e0eaff',
+                            500: '#4a6bff',
+                            600: '#2541b2',
+                        }
+                    }
                 }
             }
         }
@@ -32,34 +40,41 @@
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 
     <style>
-        /* Menghilangkan scrollbar untuk semua browser */
+        /* Hide scrollbar but keep functionality */
         body::-webkit-scrollbar {
             display: none;
         }
-
         body {
             -ms-overflow-style: none;
             scrollbar-width: none;
-            background-color: #f0f2f5;
+        }
+        
+        /* Smooth transitions for all interactive elements */
+        button, input, a {
+            transition: all 0.2s ease;
+        }
+        
+        /* Better focus states */
+        [type="text"]:focus, [type="email"]:focus, [type="password"]:focus {
+            outline: none;
+            ring: 3px;
+            ring-opacity: 0.2;
+            ring-color: theme('colors.primary.500');
         }
     </style>
 
     @stack('styles')
 </head>
 
-<body class="font-sans antialiased overflow-hidden bg-gray-50"
-    style="background-size: cover; background-position: center; background-attachment: fixed; background-repeat: no-repeat;">
-    <div class="min-h-screen flex flex-col">
-        <!-- Page Content -->
-        <main class="flex-grow flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-            <div class="w-full max-w-md mx-auto">
-                {{ $slot }}
-            </div>
-        </main>
-    </div>
+<body class="font-sans antialiased bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
+    <!-- Main Content -->
+    <main class="min-h-screen flex items-center justify-center p-4 sm:p-6">
+        <div class="w-full max-w-md">
+            {{ $slot }}
+        </div>
+    </main>
 
     @stack('scripts')
-
 </body>
 
 </html>
