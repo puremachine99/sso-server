@@ -46,8 +46,8 @@
     @stack('styles')
 </head>
 
-<body class="font-sans antialiased overflow-hidden"
-    style=" background-size: cover; background-position: center; background-attachment: fixed; background-repeat: no-repeat;">
+<body class="font-sans antialiased overflow-hidden bg-gray-50" 
+    style="background-size: cover; background-position: center; background-attachment: fixed; background-repeat: no-repeat;">
     <div class="min-h-screen flex flex-col">
         <!-- Page Content -->
         <main class="flex-grow flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
