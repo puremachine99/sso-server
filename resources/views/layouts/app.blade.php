@@ -40,13 +40,14 @@
         body {
             -ms-overflow-style: none;
             scrollbar-width: none;
+            background-color: #f0f2f5;
         }
     </style>
 
     @stack('styles')
 </head>
 
-<body class="font-sans antialiased overflow-hidden bg-gray-50" 
+<body class="font-sans antialiased overflow-hidden bg-gray-50"
     style="background-size: cover; background-position: center; background-attachment: fixed; background-repeat: no-repeat;">
     <div class="min-h-screen flex flex-col">
         <!-- Page Content -->
