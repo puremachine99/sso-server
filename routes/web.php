@@ -1,5 +1,6 @@
 <?php
 
+use App\Mail\ExampleEmail;
 use App\Mail\TestMailerSend;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
