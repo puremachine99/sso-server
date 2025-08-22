@@ -111,6 +111,13 @@
         }
 
 
+        .input-with-icon {
+            position: relative;
+            /* biar toggle ikut input */
+            display: flex;
+            align-items: center;
+        }
+
         .password-toggle {
             position: absolute;
             right: 10px;
@@ -120,6 +127,8 @@
             border: none;
             color: var(--text-gray);
             cursor: pointer;
+            font-size: 1rem;
+            /* biar pas */
         }
 
         .password-container {
