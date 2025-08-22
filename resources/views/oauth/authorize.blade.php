@@ -1,56 +1,40 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Authorize Access</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-</head>
-<body class="bg-gray-50 min-h-screen flex items-center justify-center p-4">
-    <div class="w-full max-w-md bg-white rounded-xl shadow-lg overflow-hidden p-8">
-        <div class="text-center mb-6">
-            <div class="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <i class="fas fa-shield-alt text-indigo-600 text-2xl"></i>
-            </div>
-            <h2 class="text-2xl font-bold text-gray-800">Authorize {{ $client->name }}</h2>
-            <p class="text-gray-600 mt-2">{{ $client->name }} is requesting access to your account.</p>
-        </div>
+<x-app-layout>
+    <x-style-authorize />
 
-        <div class="mb-6">
-            <h3 class="text-sm font-medium text-gray-700 mb-3">Requested Permissions:</h3>
-            <div class="space-y-2">
-                @foreach ($scopes as $scope)
-                <div class="flex items-center p-3 bg-gray-50 rounded-lg">
-                    <i class="fas fa-check-circle text-indigo-500 mr-3"></i>
-                    <span class="text-gray-700">{{ $scope->description }}</span>
+    <div class="min-h-screen flex items-center justify-center p-4">
+        <div class="w-full max-w-md bg-white rounded-2xl shadow-neumorph p-6">
+
+            {{-- Header --}}
+            <div class="text-center mb-8">
+                <div class="mx-auto mb-4 w-20 h-20 rounded-2xl flex items-center justify-center bg-gradient-to-br from-blue-50 to-white shadow-neumorph">
+                    <i class="fas fa-shield-alt text-blue-500 text-2xl"></i>
                 </div>
-                @endforeach
+                <h2 class="text-2xl font-semibold text-gray-800">Authorize {{ $client->name }}</h2>
+                <p class="text-gray-500 mt-2 text-sm">{{ $client->name }} wants to access your account</p>
             </div>
+
+            {{-- Permissions --}}
+            <x-permission-list :scopes="$scopes" />
+
+            {{-- Actions --}}
+            @foreach ([
+                ['method' => 'POST', 'variant' => 'primary', 'icon' => 'check-circle', 'label' => 'Authorize Access'],
+                ['method' => 'DELETE', 'variant' => 'secondary', 'icon' => 'times-circle', 'label' => 'Deny Access'],
+            ] as $action)
+                <form method="post" action="/oauth/authorize" class="mb-4">
+                    @csrf
+                    @if ($action['method'] === 'DELETE') @method('DELETE') @endif
+
+                    <input type="hidden" name="state" value="{{ request()->state }}">
+                    <input type="hidden" name="client_id" value="{{ $client->id }}">
+                    <input type="hidden" name="auth_token" value="{{ $authToken }}">
+
+                    <x-button variant="{{ $action['variant'] }}">
+                        <i class="fas fa-{{ $action['icon'] }} mr-2"></i> {{ $action['label'] }}
+                    </x-button>
+                </form>
+            @endforeach
+
         </div>
-
-        <form method="post" action="/oauth/authorize" class="mb-4">
-            @csrf
-            <input type="hidden" name="state" value="{{ request()->state }}">
-            <input type="hidden" name="client_id" value="{{ $client->id }}">
-            <input type="hidden" name="auth_token" value="{{ $authToken }}">
-
-            <button type="submit" 
-                class="w-full bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-700 hover:to-indigo-600 text-white py-3 px-4 rounded-lg font-medium shadow-md hover:shadow-lg transition-all duration-200">
-                <i class="fas fa-check-circle mr-2"></i> Authorize Access
-            </button>
-        </form>
-
-        <form method="post" action="/oauth/authorize">
-            @csrf
-            @method('DELETE')
-            <input type="hidden" name="state" value="{{ request()->state }}">
-            <input type="hidden" name="client_id" value="{{ $client->id }}">
-            <input type="hidden" name="auth_token" value="{{ $authToken }}">
-            
-            <button type="submit" 
-                class="w-full bg-gradient-to-r from-gray-400 to-gray-500 hover:from-gray-500 hover:to-gray-600 text-white py-3 px-4 rounded-lg font-medium shadow-md hover:shadow-lg transition-all duration-200">
-                <i class="fas fa-times-circle mr-2"></i> Deny Access
-            </button>
-        </form>
     </div>
-</body>
-</html>
+</x-app-layout>

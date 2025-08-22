@@ -47,6 +47,7 @@
         body {
             -ms-overflow-style: none;
             scrollbar-width: none;
+            background-image: url("https://www.transparenttextures.com/patterns/sandpaper.png");
         }
         
         /* Smooth transitions for all interactive elements */
