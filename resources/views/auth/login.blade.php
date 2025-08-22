@@ -42,7 +42,7 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-            padding: 2rem;
+            padding: 0px;
         }
 
         .auth-form {
@@ -277,6 +277,7 @@
             font-size: 1.2rem;
         }
 
+        /* kanan */
         .auth-graphics {
             position: relative;
             width: 100%;
@@ -285,21 +286,40 @@
             overflow: hidden;
         }
 
+        /* background gif full screen */
         .auth-graphics img {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            height: 100vh;
+            /* full tinggi layar */
+            width: auto;
+            /* biar proporsional */
+            min-width: 100%;
+            /* jangan sampai ada gap di kiri kanan */
+            transform: translateX(-50%);
+            /* center secara horizontal */
+            object-fit: cover;
+            /* jaga biar isi penuh */
+            z-index: 1;
+        }
+
+        /* overlay gelap */
+        .auth-graphics::after {
+            content: "";
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            /* biar gif selalu penuh tanpa pecah */
-            z-index: 1;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 2;
         }
 
+        /* text container */
         .graphic-content {
             position: relative;
-            z-index: 2;
-            /* biar di atas gif */
+            z-index: 3;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -308,14 +328,10 @@
             height: 100%;
             padding: 2rem;
             color: #fff;
-            /* default putih, nanti bisa override */
-            background: rgba(0, 0, 0, 0.3);
-            /* optional: overlay gelap tipis supaya teks jelas */
         }
 
         .graphic-title {
             font-size: 3rem;
-            /* jumbo tron */
             font-weight: 700;
             margin-bottom: 1rem;
         }
@@ -324,29 +340,6 @@
             font-size: 1.25rem;
             max-width: 700px;
             margin: 0 auto;
-        }
-
-
-        .floating-button {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 60px;
-            height: 60px;
-            background-color: var(--accent-yellow);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
-        }
-
-        .floating-button span {
-            color: var(--primary-navy);
-            font-weight: 600;
-            font-size: 0.8rem;
         }
     </style>
 </head>
