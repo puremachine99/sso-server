@@ -6,6 +6,7 @@ use App\Models\User;
 use Laravel\Passport\Passport;
 use App\Observers\UserObserver;
 use Illuminate\Routing\UrlGenerator;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -24,7 +25,9 @@ class AppServiceProvider extends ServiceProvider
     public function boot(UrlGenerator $url): void
     {
         // ngilangin mixedcontent di filament kwkwkw
-
+        Blade::directive('imgproxy', function ($expression) {
+            return "<?php echo app('App\Services\ImgProxyService')->url($expression); ?>";
+        });
         // $url->forceScheme('https');
 
         User::observe(UserObserver::class);

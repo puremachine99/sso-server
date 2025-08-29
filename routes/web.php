@@ -51,4 +51,10 @@ Route::prefix('test')->group(function () {
         Mail::to('puremachine99@gmail.com')->send(new TestMailerSend());
         return 'Email test terkirim!';
     });
+    Route::get('imgproxy', function () {
+        $imgProxyService = app('App\Services\ImgProxyService');
+        $originalUrl = 'https://via.placeholder.com/800x600';
+        $imgProxyUrl = $imgProxyService->url($originalUrl, ['resize' => '300x300']);
+        return "Original URL: $originalUrl<br>ImgProxy URL: $imgProxyUrl";
+    });
 });
