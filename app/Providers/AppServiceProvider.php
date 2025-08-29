@@ -25,9 +25,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot(UrlGenerator $url): void
     {
         // ngilangin mixedcontent di filament kwkwkw
-        Blade::directive('imgproxy', function ($expression) {
-            return "<?php echo app('App\Services\ImgProxyService')->url($expression); ?>";
-        });
         // $url->forceScheme('https');
 
         User::observe(UserObserver::class);
