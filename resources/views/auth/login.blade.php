@@ -423,7 +423,7 @@
 
         <div class="auth-side auth-graphics">
             <div class="graphic-content">
-                <img src="{{ asset('images/bg-login.gif') }}" />
+                <img src="{{ 'https://imgproxy.smartid.co.id/100x200,sc/plain/' . asset('images/bg-login.gif') }}" />
                 <h2 class="graphic-title">Secure Access</h2>
                 <p class="graphic-description">Your data is protected with enterprise-grade security and encryption.</p>
             </div>
