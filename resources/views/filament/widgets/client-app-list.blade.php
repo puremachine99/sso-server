@@ -20,8 +20,7 @@
                         $secret = \App\Models\ClientSecret::find($app->id);
                         $iconUrl = $secret?->icon_path ? asset('storage/' . $secret->icon_path) : null;
                     @endphp
-                    <a href="{{ $uri }}" target="_blank"
-                        class="">
+                    <a href="{{ $uri }}" target="_blank" class="">
                         <div
                             class="group relative p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-all duration-200 overflow-hidden">
                             <div
@@ -32,7 +31,7 @@
                                 <!-- App Icon with gradient border -->
                                 <div class="mb-4 p-1 rounded-full bg-gradient-to-tr from-primary-400 to-primary-600">
                                     @if ($iconUrl)
-                                        <img src="{{ $iconUrl }}" alt="{{ $app->name }} icon"
+                                        <img src="{{ imgproxy($iconUrl) }}"alt="{{ $app->name }} icon"
                                             class="w-16 h-16 object-cover rounded-full border-1 border-white dark:border-gray-800 shadow-sm">
                                     @else
                                         <div

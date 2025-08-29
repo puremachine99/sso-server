@@ -8,7 +8,7 @@
                 </a>
             </div>
 
-            <a href="https://smartid.co.id/" target="_blank"><img src="{{ asset('images/logo.png') }}" alt="Logo" class="h-10 w-10 object-contain" /></a>
+            <a href="https://smartid.co.id/" target="_blank"><img src="{{ imgproxy('images/logo.png') }}" alt="Logo" class="h-10 w-10 object-contain" /></a>
 
         </div>
     </x-filament::card>

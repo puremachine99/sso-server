@@ -34,5 +34,8 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
+    'imgproxy' => [
+        'url' => env('IMGPROXY_URL', 'https://imgproxy.smartid.co.id'),
+    ],
 
 ];
