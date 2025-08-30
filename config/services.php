@@ -38,7 +38,7 @@ return [
         'url' => env('IMGPROXY_URL', 'https://imgproxy.smartid.co.id'),
         'key' => env('IMGPROXY_KEY', ''),
         'salt' => env('IMGPROXY_SALT', ''),
-
+        'base_asset_url' => 'https://smartidapp.co.id',
     ],
 
 ];

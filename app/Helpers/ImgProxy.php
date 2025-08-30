@@ -1,10 +1,11 @@
 <?php
+
 if (!function_exists('imgproxy')) {
     /**
-     * Generate imgproxy URL from local asset.
+     * Generate an ImgProxy URL (signed if key/salt exist, else plain).
      *
-     * @param  string  $path
-     * @param  string|null  $transform
+     * @param  string       $path       Path lokal (misal 'images/bg.gif')
+     * @param  string|null  $transform  Resize/crop option (ex: '300x200,sc')
      * @return string
      */
     function imgproxy(string $path, ?string $transform = '100x200,sc'): string
