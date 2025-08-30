@@ -19,6 +19,6 @@ if (!function_exists('imgproxy')) {
         // Jangan encode https://, langsung concat
         $origin = $baseAsset . $path;
 
-        return rtrim($baseProxy, '/') . '/' . $transform . '/plain/' . $origin;
+        return 'https://' . rtrim($baseProxy, '/') . '/' . $transform . '/plain/' . $origin;
     }
 }
