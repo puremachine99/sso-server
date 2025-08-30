@@ -1,39 +1,23 @@
 <?php
-
 if (!function_exists('imgproxy')) {
     /**
-     * Generate an ImgProxy URL (signed if key/salt exist, else plain).
+     * Generate imgproxy URL from local asset.
      *
-     * @param  string       $path       Path lokal (misal 'images/bg.gif')
-     * @param  string|null  $transform  Resize/crop option (ex: '300x200,sc')
+     * @param  string  $path
+     * @param  string|null  $transform
      * @return string
      */
     function imgproxy(string $path, ?string $transform = '100x200,sc'): string
     {
-        $baseUrl = rtrim(config('services.imgproxy.url'), '/');
-        $key     = config('services.imgproxy.key');
-        $salt    = config('services.imgproxy.salt');
+        $baseProxy = config('services.imgproxy.url'); // contoh: https://imgproxy.smartid.co.id
+        $baseAsset = config('services.imgproxy.base_asset_url'); // contoh: https://smartidapp.co.id
 
-        // Buat full URL dari asset
-        $origin = asset($path);
+        // Pastikan path dimulai dengan /
+        $path = '/' . ltrim($path, '/');
 
-        // Encode biar https:// gak bikin path rusak
-        $origin = rawurlencode($origin);
+        // Jangan encode https://, langsung concat
+        $origin = $baseAsset . $path;
 
-        $urlPart = "/{$transform}/plain/{$origin}";
-
-        // Signed mode (kalau key & salt tersedia)
-        if (!empty($key) && !empty($salt)) {
-            $key  = base64_decode($key);
-            $salt = base64_decode($salt);
-
-            $signature = hash_hmac('sha256', $salt . $urlPart, $key, true);
-            $signature = rtrim(strtr(base64_encode($signature), '+/', '-_'), '=');
-
-            return "{$baseUrl}/{$signature}{$urlPart}";
-        }
-
-        // Fallback unsigned mode
-        return "{$baseUrl}{$urlPart}";
+        return rtrim($baseProxy, '/') . '/' . $transform . '/plain/' . $origin;
     }
 }
