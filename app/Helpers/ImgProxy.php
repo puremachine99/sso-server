@@ -9,7 +9,7 @@ if (!function_exists('imgproxy')) {
         // Pastikan path jadi full url (pakai asset())
         $origin = asset($path);
 
-        return rtrim($baseProxy, '/') . '/' . $transform . '/plain/' . $origin;
+        return rtrim($baseProxy, '/')  . $transform . '/plain/' . $origin;
     }
 }
 
