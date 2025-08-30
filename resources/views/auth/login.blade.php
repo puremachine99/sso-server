@@ -75,8 +75,8 @@
             <div class="absolute inset-0 bg-black/50"></div>
 
             <div class="relative z-10 flex flex-col items-center justify-center w-full text-center text-white p-8">
-                <h2 class="text-5xl font-bold mb-4">Secure Access</h2>
-                <p class="text-lg max-w-lg">Your data is protected with enterprise-grade security and encryption.</p>
+                <h2 class="text-5xl font-bold mb-4">Single Sign On</h2>
+                <p class="text-lg max-w-lg">Login sekali buat semua Aplikasi Internal Smart Id.</p>
             </div>
         </div>
     </div>
