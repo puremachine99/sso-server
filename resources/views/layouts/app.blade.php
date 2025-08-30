@@ -57,52 +57,7 @@
             transition: all 0.2s ease;
         }
 
-        button.button-c {
-            color: #000;
-            margin: auto;
-            line-height: 40px;
-            font-size: 12px;
-            font-weight: 900;
-            letter-spacing: 3px;
-            text-transform: inherit;
-            background-color: #fff;
-            position: relative;
-            border: 5px solid #000;
-            box-shadow: 1px 1px 0, 2px 2px 0, 3px 3px 0, 4px 4px 0, 5px 5px 0;
-        }
-
-        button.button-c:active {
-            top: 5px;
-            left: 5px;
-            box-shadow: 0 0 0 0;
-        }
-
-        input.input-c {
-            color: #000;
-            font-size: 14px;
-            font-weight: 600;
-            letter-spacing: 1px;
-            background-color: #fff;
-            border: 3px solid #000;
-            padding: 10px 12px;
-            width: 100%;
-            outline: none;
-
-            /* Shadow blok */
-            box-shadow: 1px 1px 0,
-                2px 2px 0,
-                3px 3px 0,
-                4px 4px 0;
-        }
-
-        input.input-c:focus {
-            border-color: #FFD43B;
-            /* kuning pas fokus */
-            box-shadow: 1px 1px 0 #FFD43B,
-                2px 2px 0 #FFD43B,
-                3px 3px 0 #FFD43B,
-                4px 4px 0 #FFD43B;
-        }
+        
     </style>
 
     @stack('styles')

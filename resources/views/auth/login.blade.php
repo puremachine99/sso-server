@@ -4,7 +4,7 @@
         <div class="relative flex-1 flex items-center justify-center bg-white lg:bg-transparent z-10">
             <!-- Overlay for mobile (gambar di belakang) -->
             <div class="absolute inset-0 lg:hidden">
-                <img src="{{ imgproxy('images/bg-login.gif') }}" class="h-full w-full object-cover" />
+                <img loading="lazy" src="{{ imgproxy('images/bg-login.gif') }}" class="h-full w-full object-cover" />
                 <div class="absolute inset-0 bg-black/50"></div>
             </div>
 
@@ -12,7 +12,7 @@
             <div class="relative w-full max-w-lg p-8 bg-white/90 lg:bg-white rounded-lg shadow-lg lg:shadow-none">
                 <!-- Logo -->
                 <div class="text-center mb-6">
-                    <img src="{{ imgproxy('images/logo.png') }}" alt="Logo" class="h-16 mx-auto">
+                    <img loading="lazy" src="{{ imgproxy('images/logo.png') }}" alt="Logo" class="h-16 mx-auto">
                 </div>
 
                 <!-- Title -->
@@ -60,8 +60,7 @@
                     </div>
 
                     <!-- Submit -->
-                    <button type="submit"
-                        class="w-full button-c">
+                    <button type="submit" class="w-full button-c">
                         <i class="fas fa-sign-in-alt mr-2"></i> Sign In
                     </button>
                 </form>
@@ -70,8 +69,8 @@
 
         <!-- Right Side (Graphics for desktop only) -->
         <div class="hidden lg:flex flex-1 relative">
-            <img src="{{ imgproxy('images/bg-login.gif') }}" 
-                 class="absolute inset-0 h-full w-full object-cover" />
+            <img loading="lazy" src="{{ imgproxy('images/bg-login.gif') }}"
+                class="absolute inset-0 h-full w-full object-cover" />
             <div class="absolute inset-0 bg-black/50"></div>
 
             <div class="relative z-10 flex flex-col items-center justify-center w-full text-center text-white p-8">
@@ -89,9 +88,9 @@
             const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
             password.setAttribute('type', type);
 
-            this.innerHTML = type === 'password' 
-                ? '<i class="far fa-eye"></i>' 
-                : '<i class="far fa-eye-slash"></i>';
+            this.innerHTML = type === 'password' ?
+                '<i class="far fa-eye"></i>' :
+                '<i class="far fa-eye-slash"></i>';
         });
     </script>
 </x-app-layout>
