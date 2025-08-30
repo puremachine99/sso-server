@@ -22,7 +22,7 @@
                 </div>
 
                 <!-- Form -->
-                <form method="POST" action="{{ route('login') }}" class="space-y-5">
+                <form method="POST" action="{{ route('admin.login.post') }}" class="space-y-5">
                     @csrf
 
                     <!-- Email -->

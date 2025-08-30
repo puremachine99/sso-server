@@ -109,7 +109,7 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect($request->redirect_uri ?? '/login');
+        return redirect('/admin/login');
     }
 
     public function logoutAll(Request $request)
@@ -118,9 +118,7 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        $redirectUri = $request->query('redirect_uri', '/');
-
-        return redirect($redirectUri);
+        return redirect('/admin/login');
     }
 
     public function login(Request $request)
@@ -157,5 +155,4 @@ class AuthController extends Controller
 
         return redirect()->intended();
     }
-
 }

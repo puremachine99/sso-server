@@ -98,16 +98,17 @@ return [
 
     'system_route_prefix' => '',
     'auth' => [
-    'guard' => 'web',
+        'guard' => 'web',
 
-    'pages' => [
-        'login' => '/login', // ✅ arahkan ke login portal kamu
+        'pages' => [
+            // langsung arahkan ke URL login kustom kamu
+            'login' => '/admin/login',
+        ],
+
+        // setelah logout selalu ke admin/login
+        'logout_response' => fn() => redirect('/admin/login'),
     ],
 
-    'logout' => [
-        'url' => '/logout-all',
-        'method' => 'GET',
-    ],
-],
+
 
 ];
