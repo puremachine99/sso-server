@@ -52,5 +52,17 @@ Route::prefix('test')->group(function () {
         Mail::to('puremachine99@gmail.com')->send(new TestMailerSend());
         return 'Email test terkirim!';
     });
+    Route::get('/test-imgproxy', function () {
+        // Contoh file
+        $path = 'images/bg-login.gif';
 
+        // Panggil helper
+        $url = imgproxy($path, '100x200,sc');
+
+        return response()->json([
+            'original' => config('services.imgproxy.base_asset_url') . '/' . ltrim($path, '/'),
+            'imgproxy' => $url,
+            'asset' => asset($path),
+        ]);
+    });
 });
