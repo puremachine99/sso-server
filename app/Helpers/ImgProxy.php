@@ -1,41 +1,49 @@
 <?php
 
 if (!function_exists('imgproxy')) {
-    function imgproxy(string $path): string {
-        $baseProxy = rtrim(config('imgproxy.url'), '/');
-        $baseAsset = rtrim(config('imgproxy.base_asset_url'), '/');
-        $keyHex    = config('imgproxy.key');
-        $saltHex   = config('imgproxy.salt');
+    function imgproxy(string $lokasiGambar): string {
+        // imgproxy smartid (https://imgproxy.smartid.co.id )
+        $urlProxy = rtrim(config('imgproxy.url'), '/');
 
-        // Build origin URL (full)
-        $isAbsolute = str_starts_with($path, 'http://') || str_starts_with($path, 'https://');
-        $origin = $isAbsolute ? $path : ($baseAsset . '/' . ltrim($path, '/'));
+        // samain kayak app_url (buat yang pake path relatif)
+        $urlAsetAsli = rtrim(config('imgproxy.base_asset_url'), '/');
 
-        // Ambil default transform dari config
-        $resize    = config('imgproxy.resize');
-        $width     = config('imgproxy.width');
-        $height    = config('imgproxy.height');
-        $enlarge   = config('imgproxy.enlarge');
-        $gravity   = config('imgproxy.gravity');
-        $extension = config('imgproxy.extension');
+        // garamaraman dan madu dung dung
+        $kunciHex = config('imgproxy.key');
+        $garamHex = config('imgproxy.salt');
 
-        // Encode origin → urlsafe base64
-        $encoded = rtrim(strtr(base64_encode($origin), '+/', '-_'), '=');
+        // cek ini link full (http/https) atau cuma path internal
+        $udahLengkap = str_starts_with($lokasiGambar, 'http://') || str_starts_with($lokasiGambar, 'https://');
+        $urlAsli = $udahLengkap ? $lokasiGambar : ($urlAsetAsli . '/' . ltrim($lokasiGambar, '/'));
 
-        // Path unsigned
-        $unsignedPath = "/rs:{$resize}:{$width}:{$height}:{$enlarge}/g:{$gravity}/{$encoded}.{$extension}";
+        // ambil setingan default dari config (resize, ukuran, dll)
+        $modeResize = config('imgproxy.resize');
+        $lebar      = config('imgproxy.width');
+        $tinggi     = config('imgproxy.height');
+        $bolehZoom  = config('imgproxy.enlarge');
+        $gravitasi  = config('imgproxy.gravity');
+        $format     = config('imgproxy.extension');
 
-        // Kalau key/salt kosong → insecure
-        $key  = @hex2bin($keyHex);
-        $salt = @hex2bin($saltHex);
-        if (!$key || !$salt) {
-            return $baseProxy . '/insecure' . $unsignedPath;
+        // encode alamat asli jadi base64 ala-ala URL
+        $encoded = rtrim(strtr(base64_encode($urlAsli), '+/', '-_'), '=');
+
+        // bikin path tanpa tanda tangan dulu
+        $pathNakal = "/rs:{$modeResize}:{$lebar}:{$tinggi}:{$bolehZoom}/g:{$gravitasi}/{$encoded}.{$format}";
+
+        // kalau kunci/garam kosong → pake mode insecure (langsung gaspol)
+        $kunci = @hex2bin($kunciHex);
+        $garam = @hex2bin($garamHex);
+        if (!$kunci || !$garam) {
+            return $urlProxy . '/insecure' . $pathNakal;
         }
 
-        // Signature
-        $digest = hash_hmac('sha256', $salt . $unsignedPath, $key, true);
-        $signature = rtrim(strtr(base64_encode($digest), '+/', '-_'), '=');
+        // let him cook
+        $tandaTangan = hash_hmac('sha256', $garam . $pathNakal, $kunci, true);
 
-        return $baseProxy . '/' . $signature . $unsignedPath;
+        // let ! him ! cook !
+        $ttFinal = rtrim(strtr(base64_encode($tandaTangan), '+/', '-_'), '=');
+
+        // output
+        return $urlProxy . '/' . $ttFinal . $pathNakal;
     }
 }
