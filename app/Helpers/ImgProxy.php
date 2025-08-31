@@ -1,24 +1,40 @@
 <?php
 
+use Illuminate\Support\Facades\Config;
+
 if (!function_exists('imgproxy')) {
-    /**
-     * Generate an ImgProxy URL (signed if key/salt exist, else plain).
-     *
-     * @param  string       $path       Path lokal (misal 'images/bg.gif')
-     * @param  string|null  $transform  Resize/crop option (ex: '300x200,sc')
-     * @return string
-     */
-    function imgproxy(string $path, ?string $transform = '100x200,sc'): string
-    {
-        $baseProxy = config('services.imgproxy.url'); // contoh: https://imgproxy.smartid.co.id
-        $baseAsset = config('services.imgproxy.base_asset_url'); // contoh: https://smartidapp.co.id
+    function imgproxy(
+        string $path,
+        string $transform = 'rs:fit:::0/g:no',
+        string $extension = 'jpg',
+        string $gravity = 'no'
+    ): string {
+        $baseProxy = rtrim(Config::get('imgproxy.url'), '/');
+        $baseAsset = rtrim(Config::get('imgproxy.base_asset_url'), '/');
 
-        // Pastikan path dimulai dengan /
-        $path = '/' . ltrim($path, '/');
+        $keyHex  = Config::get('imgproxy.key');
+        $saltHex = Config::get('imgproxy.salt');
 
-        // Jangan encode https://, langsung concat
-        $origin = $baseAsset . $path;
+        // full origin url
+        $origin = $baseAsset . '/' . ltrim($path, '/');
 
-        return 'https://' . rtrim($baseProxy, '/') . '/' . $transform . '/plain/' . $origin;
+        // url-safe base64 encode (tanpa padding)
+        $encoded = rtrim(strtr(base64_encode($origin), '+/', '-_'), '=');
+
+        // build path sesuai pola JS
+        $unsignedPath = '/' . $transform . '/g:' . $gravity . '/' . $encoded . '.' . $extension;
+
+        if (empty($keyHex) || empty($saltHex)) {
+            return $baseProxy . '/insecure' . $unsignedPath;
+        }
+
+        $key  = hex2bin($keyHex);
+        $salt = hex2bin($saltHex);
+
+        // sign
+        $digest = hash_hmac('sha256', $salt . $unsignedPath, $key, true);
+        $signature = rtrim(strtr(base64_encode($digest), '+/', '-_'), '=');
+
+        return $baseProxy . '/' . $signature . $unsignedPath;
     }
 }

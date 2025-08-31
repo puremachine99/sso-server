@@ -70,8 +70,9 @@
 
         <!-- Right Side (Graphics for desktop only) -->
         <div class="hidden lg:flex flex-1 relative">
-            <img src="{{ imgproxy('images/bg-login.jpg') }}" 
-                 class="absolute inset-0 h-full w-full object-cover" />
+            <img src="{{ imgproxy('images/bg-login.jpg', 'rs:fit:::0', 'jpg', 'no') }}"
+                class="absolute inset-0 h-full w-full object-cover" />
+
             <div class="absolute inset-0 bg-black/50"></div>
 
             <div class="relative z-10 flex flex-col items-center justify-center w-full text-center text-white p-8">
@@ -89,9 +90,9 @@
             const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
             password.setAttribute('type', type);
 
-            this.innerHTML = type === 'password' 
-                ? '<i class="far fa-eye"></i>' 
-                : '<i class="far fa-eye-slash"></i>';
+            this.innerHTML = type === 'password' ?
+                '<i class="far fa-eye"></i>' :
+                '<i class="far fa-eye-slash"></i>';
         });
     </script>
 </x-app-layout>
