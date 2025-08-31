@@ -7,10 +7,10 @@ return [
     'salt'           => env('IMGPROXY_SALT'),
 
     // default transform options
-    'resize'   => 'fit',
-    'width'    => 0,
-    'height'   => 0,
-    'enlarge'  => 0,
-    'gravity'  => 'no',
-    'extension'=> 'jpg',
+    'resize'    => 'fit',
+    'width'     => 300,
+    'height'    => 0,
+    'enlarge'   => 0,
+    'gravity'   => 'no',
+    'extension' => 'webp',
 ];
