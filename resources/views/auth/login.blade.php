@@ -70,7 +70,7 @@
 
         <!-- Right Side (Graphics for desktop only) -->
         <div class="hidden lg:flex flex-1 relative">
-            <img src="{{ imgproxy('images/bg-login.jpg', 'rs:fit:::0', 'jpg', 'no') }}"
+            <img src="{{ imgproxy('images/bg-login.jpg', 'rs:fit:::0', null, 'no') }}"
                 class="absolute inset-0 h-full w-full object-cover" />
 
             <div class="absolute inset-0 bg-black/50"></div>
