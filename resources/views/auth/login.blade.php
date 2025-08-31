@@ -4,7 +4,7 @@
         <div class="relative flex-1 flex items-center justify-center bg-white lg:bg-transparent z-10">
             <!-- Overlay for mobile (gambar di belakang) -->
             <div class="absolute inset-0 lg:hidden">
-                <img src="{{ imgproxy('images/bg-login.jpg') }}" class="h-full w-full object-cover" />
+                <img src="{{ imgproxy('images/bg.jpg') }}" class="h-full w-full object-cover" />
                 <div class="absolute inset-0 bg-black/50"></div>
             </div>
 
@@ -70,7 +70,7 @@
 
         <!-- Right Side (Graphics for desktop only) -->
         <div class="hidden lg:flex flex-1 relative">
-            <img src="{{ imgproxy('images/bg-login.jpg') }}" alt="Background"
+            <img src="{{ imgproxy('images/bg.jpg') }}" alt="Background"
                 class="absolute inset-0 h-full w-full object-cover">
 
 
