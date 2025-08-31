@@ -59,7 +59,7 @@ Route::prefix('test')->group(function () {
         return 'Email test terkirim!';
     });
     Route::get('/test-imgproxy', function () {
-        $path = 'images/bg-login.gif';
+        $path = 'images/bg-login.jpg';
 
         $url = imgproxy($path, '100x200,sc');
 
