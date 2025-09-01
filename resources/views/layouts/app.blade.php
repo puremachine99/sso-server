@@ -18,7 +18,10 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['JetBrains Mono', 'Fira Code', 'Source Code Pro', 'monospace'],
+                        // sans: ['JetBrains Mono', 'Fira Code', 'Source Code Pro', 'monospace'],
+                        sans: ['Inter', 'IBM Plex Sans', 'Work Sans', 'system-ui', 'sans-serif'],
+                        
+
                     },
                     colors: {
                         primary: {
