@@ -4,19 +4,16 @@
             .login-container {
                 background-color: #f0f2f5;
                 background-image:
-                    radial-gradient(at 10% 20%, rgba(255, 255, 255, 0.8) 0, transparent 50%),
-                    radial-gradient(at 90% 80%, rgba(255, 255, 255, 0.8) 0, transparent 50%);
-               
-                /* This is mostly intended for prototyping; please download the pattern and re-host for production environments. Thank you! */
+                    url('{{ imgproxy('images/bg.png') }}');
             }
 
             .login-card {
                 background: #f0f2f5;
-               
+
                 border-radius: 24px;
                 box-shadow:
-                    8px 8px 16px rgba(163, 177, 198, 0.6),
-                    -8px -8px 16px rgba(255, 255, 255, 0.7);
+                    4px 4px 8px rgba(163, 177, 198, 0.6),
+                    -4px -4px 8px rgba(255, 255, 255, 0.7);
                 border: 1px solid rgba(255, 255, 255, 0.2);
             }
 
