@@ -13,7 +13,7 @@ return [
     'height'    => 0,
     'enlarge'   => 0,
     'gravity'   => 'no',
-    'extension' => 'png',
+    'extension' => 'jpg',
 
 
 ];
