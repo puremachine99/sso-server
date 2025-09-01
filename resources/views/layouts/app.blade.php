@@ -56,14 +56,13 @@
         a {
             transition: all 0.2s ease;
         }
-
-        
     </style>
 
     @stack('styles')
 </head>
 
-<body class="font-sans antialiased bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
+<body class="font-sans antialiased bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen"
+    background="{{ imgproxy('image/bg.png') }}">
     <!-- Main Content -->
     <main class="min-h-screen flex items-center justify-center">
         <div class="w-full max-w-12xl">

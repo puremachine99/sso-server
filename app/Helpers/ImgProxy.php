@@ -24,13 +24,13 @@ if (!function_exists('imgproxy')) {
         $gravitasi  = config('imgproxy.gravity');
         $format     = config('imgproxy.extension');
 
-        // encode alamat asli jadi base64 ala-ala URL
+        // encode alamat asli dadi base64 URL
         $encoded = rtrim(strtr(base64_encode($urlAsli), '+/', '-_'), '=');
 
         // bikin path tanpa tanda tangan dulu
         $pathNakal = "/rs:{$modeResize}:{$lebar}:{$tinggi}:{$bolehZoom}/g:{$gravitasi}/{$encoded}.{$format}";
 
-        // kalau kunci/garam kosong → pake mode insecure (langsung gaspol)
+        // kalau key/salt kosong bisa pake mode insecure (langsung sekip)
         $kunci = @hex2bin($kunciHex);
         $garam = @hex2bin($garamHex);
         if (!$kunci || !$garam) {
