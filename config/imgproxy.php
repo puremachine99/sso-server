@@ -9,11 +9,11 @@ return [
 
     // setingan
     'resize'    => 'fit',
-    'width'     => 300,
-    'height'    => 0,
+    'width'     => 0,
+    'height'    => 750,
     'enlarge'   => 0,
     'gravity'   => 'no',
-    'extension' => 'jpg',
+    'extension' => 'webp',
 
 
 ];
