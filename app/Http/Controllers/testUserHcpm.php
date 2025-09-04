@@ -7,7 +7,7 @@ use App\Models\HcpmUser;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
-class testUserHcpm extends Controller
+class TestUserHcpm extends Controller
 {
     public function index()
     {

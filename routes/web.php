@@ -34,16 +34,20 @@ Route::get('/reset-password/{token}', [PasswordResetController::class, 'showRese
 Route::post('/reset-password', [PasswordResetController::class, 'resetPassword'])->name('password.update');
 // test
 Route::prefix('test')->group(function () {
-    Route::get('/hcpm-users', [testUserHcpm::class, 'index'])->name('hcpm.index');
-    Route::get('/user/{id}', [testUserHcpm::class, 'show'])->name('hcpm.show');
-    Route::get('/users-with-roles', [testUserHcpm::class, 'portalUser'])->name('portal.index');
-    Route::get('/set-su/{email}', [testUserHcpm::class, 'setSuperAdmin'])->name('portal.set-su');
-    Route::get('/reset/{email}', [testUserHcpm::class, 'resetPasswordToDefault'])->name('portal.reset');
-    Route::get('/sync-hcpm', [testUserHcpm::class, 'syncToPortal'])->name('test.hcpm.sync');
+    Route::get('/hcpm-users', [TestUserHcpm::class, 'index'])->name('hcpm.index');
+    Route::get('/user/{id}', [TestUserHcpm::class, 'show'])->name('hcpm.show');
+    Route::get('/users-with-roles', [TestUserHcpm::class, 'portalUser'])->name('portal.index');
+    Route::get('/set-su/{email}', [TestUserHcpm::class, 'setSuperAdmin'])->name('portal.set-su');
+    Route::get('/reset/{email}', [TestUserHcpm::class, 'resetPasswordToDefault'])->name('portal.reset');
+    Route::get('/sync-hcpm', [TestUserHcpm::class, 'syncToPortal'])->name('test.hcpm.sync');
+
+    // mail test
     Route::get('/email', function () {
         Mail::to('puremachine99@gmail.com')->send(new TestMailerSend());
         return 'Email test terkirim!';
     });
+
+    //imgproxy
     Route::get('/test-imgproxy', function () {
         $path = 'images/bg-login.jpg';
 
