@@ -45,6 +45,7 @@ Route::prefix('test')->group(function () {
     Route::get('/email', function () {
         Mail::to('puremachine99@gmail.com')->send(new TestMailerSend());
         return 'Email test terkirim!';
+// hehe
     });
 
     //imgproxy
