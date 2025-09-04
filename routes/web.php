@@ -9,43 +9,29 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PasswordResetController;
 
 
-// Redirect '/' ke login jika belum login, atau ke dashboard jika sudah login
-Route::get('/', function () {
-    return Auth::check()
-        ? redirect('/dashboard') // ganti sesuai nama dashboard route kamu
-        : redirect('/admin/login');
-});
+// Root: kirim ke dashboard kalau sudah login, kalau belum ke /admin/login
+Route::get('/', fn() => Auth::check() ? redirect('/dashboard') : redirect()->route('admin.login'));
 
-// Override Filament login route
-Route::get('/login', function () {
-    return Auth::check()
-        ? redirect('/dashboard') // jika sudah login, lempar ke dashboard
-        : redirect('/admin/login');     // jika belum, redirect ke login custom
-});
+// Sediakan alias bernama 'login' agar middleware senang
+Route::get('/login', fn() => redirect()->route('admin.login'))->name('login');
 
-//overide filament login route 
-Route::get('/login', fn() => redirect('/admin/login'));
-Route::get('/dashboard/login', fn() => redirect('/admin/login'));
-
-
+// Halaman login custom
 Route::get('/admin/login', [AuthController::class, 'showLoginForm'])->name('admin.login');
 Route::post('/admin/login', [AuthController::class, 'login'])->name('admin.login.post');
 
-// Route::post('/dashboard/logout', [AuthController::class, 'logout'])->name('dashboard.logout');
+// Logout
 Route::post('/dashboard/logout', [AuthController::class, 'logout'])
     ->name('filament.admin.auth.logout')
     ->withoutMiddleware([\Filament\Http\Middleware\Authenticate::class]);
+
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/logout-all', [AuthController::class, 'logoutAll'])->name('logout-all');
 
-
+// Forgot/reset password
 Route::get('/forgot-password', [PasswordResetController::class, 'requestForm'])->name('password.request');
 Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLink'])->name('password.email');
-
 Route::get('/reset-password/{token}', [PasswordResetController::class, 'showResetForm'])->name('password.reset');
 Route::post('/reset-password', [PasswordResetController::class, 'resetPassword'])->name('password.update');
-
-
 // test
 Route::prefix('test')->group(function () {
     Route::get('/hcpm-users', [TestUserHcpm::class, 'index'])->name('hcpm.index');

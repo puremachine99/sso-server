@@ -92,7 +92,7 @@
                 <p class="text-gray-500 mt-1 text-sm">Sign in to your SmartID account</p>
             </div>
 
-            <form method="POST" action="/login" class="space-y-5">
+            <form method="POST" action="{{ route('admin.login.post') }}" class="space-y-5">
                 @csrf
 
                 <div class="space-y-2">
