@@ -3,11 +3,9 @@
 namespace App\Providers;
 
 use App\Models\User;
-use Laravel\Passport\Passport;
 use App\Observers\UserObserver;
-use Illuminate\Routing\UrlGenerator;
-use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Passport\Passport;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -16,22 +14,32 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Pastikan default logging ke stderr kalau .env belum diset
+        config(['logging.default' => env('LOG_CHANNEL', 'stderr')]);
     }
 
     /**
      * Bootstrap any application services.
      */
-    public function boot(UrlGenerator $url): void
+    public function boot(): void
     {
-        // ngilangin mixedcontent di filament kwkwkw
-        // $url->forceScheme('https');
+        // Pastikan direktori compiled views ada (pakai VIEW_COMPILED_PATH atau fallback /tmp/views)
+        $compiled = config('view.compiled', sys_get_temp_dir() . '/views');
+        if (!is_dir($compiled)) {
+            @mkdir($compiled, 0777, true);
+        }
 
+        // Observers
         User::observe(UserObserver::class);
-        // Existing Passport setup – do not remove
+
+        // Passport (authorization screen + expiry)
         Passport::authorizationView('oauth.authorize');
         Passport::tokensExpireIn(now()->addDays(15));
         Passport::refreshTokensExpireIn(now()->addDays(30));
         Passport::personalAccessTokensExpireIn(now()->addMonths(6));
+
+        // Jika kamu TIDAK pakai route bawaan Passport, lewati ini.
+        // Kalau butuh, enable di AuthServiceProvider: Passport::routes();
+        // (di Laravel 12, ini tetap valid kalau kamu ingin publish route bawaan)
     }
 }
