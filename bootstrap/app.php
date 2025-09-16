@@ -37,6 +37,9 @@ return Application::configure(basePath: $basePath)
 
         // kalau guest diarahkan ke login custom
         $middleware->redirectGuestsTo(fn () => route('admin.login'));
+
+        // Log semua aksi non-GET ke activity_logs
+        $middleware->appendToGroup('web', [\App\Http\Middleware\LogHttpActivity::class]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

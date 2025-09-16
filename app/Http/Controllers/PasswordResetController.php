@@ -19,9 +19,12 @@ class PasswordResetController extends Controller
         $request->validate(['email' => 'required|email']);
         $status = Password::sendResetLink($request->only('email'));
 
-        return $status === Password::RESET_LINK_SENT
-            ? back()->with('status', __($status))
-            : back()->withErrors(['email' => __($status)]);
+        // Selalu balas netral untuk menghindari user-enumeration
+        // (kita tidak bocorkan apakah email terdaftar atau tidak)
+        return back()->with(
+            'status',
+            __('Jika email terdaftar, tautan reset password telah dikirim.')
+        );
     }
 
     public function showResetForm($token)
@@ -44,11 +47,29 @@ class PasswordResetController extends Controller
                     'password' => Hash::make($password),
                     'remember_token' => Str::random(60),
                 ])->save();
+
+                // Opsional: Revoke semua personal access tokens (Passport)
+                if (method_exists($user, 'tokens')) {
+                    try {
+                        $user->tokens()->delete();
+                    } catch (\Throwable $e) {
+                        // Abaikan jika Passport tidak aktif
+                    }
+                }
             }
         );
 
-        return $status === Password::PASSWORD_RESET
-            ? redirect()->route('login')->with('status', __($status))
-            : back()->withErrors(['email' => [__($status)]]);
+        if ($status === Password::PASSWORD_RESET) {
+            // Tampilkan pesan sukses generik
+            return redirect()->route('login')->with(
+                'status',
+                __('Password berhasil direset. Silakan login dengan password baru.')
+            );
+        }
+
+        // Pesan gagal tetap generik agar tidak bocor konteks token/email
+        return back()->withErrors([
+            'email' => [__('Gagal mereset password. Tautan mungkin tidak valid atau telah kedaluwarsa.')],
+        ]);
     }
 }
