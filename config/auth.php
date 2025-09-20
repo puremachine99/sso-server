@@ -69,10 +69,10 @@ return [
             'model' => env('AUTH_MODEL', App\Models\User::class),
         ],
 
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+        'hcpm_users' => [
+            'driver' => 'eloquent',
+            'model'  => App\Models\HcpmUserAuth::class, // pakai koneksi 'hcpm'
+        ],
     ],
 
     /*
@@ -100,6 +100,13 @@ return [
             'table' => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_tokens'),
             'expire' => 60,
             'throttle' => 60,
+        ],
+        //khususon hcpm user
+        'hcpm_users' => [
+            'provider' => 'hcpm_users',
+            'table'    => 'password_reset_tokens', // tabel di DB portal
+            'expire'   => 60,   // menit
+            'throttle' => 60,   // menit
         ],
     ],
 

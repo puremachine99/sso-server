@@ -114,8 +114,11 @@
                 <div class="space-y-2">
                     <div class="flex justify-between items-center">
                         <label class="block text-sm font-medium text-gray-600">Password</label>
-                        <a href="{{ route('password.request') }}" class="text-xs forgot-link">Forgot password?</a>
+                        <a href="{{ route('password.request') }}" class="text-xs text-blue-600 hover:underline">
+                            Forgot password?
+                        </a>
                     </div>
+
                     <div class="relative">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none"
