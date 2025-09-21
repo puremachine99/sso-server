@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TestUserHcpm;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PasswordResetController;
+use Illuminate\Http\Exceptions\ThrottleRequestsException;
 
 
 // Root: kirim ke dashboard kalau sudah login, kalau belum ke /admin/login
@@ -61,6 +62,54 @@ Route::prefix('test')->group(function () {
             'asset' => asset($path),
         ]);
     });
+
+    // error 
+    Route::get('/errors', function () {
+        return view('test.errors');
+    })->name('test.errors');
+
+    // Trigger 404
+    Route::get('/error/404', function () {
+        abort(404, 'Testing 404');
+    })->name('test.error.404');
+
+    // Trigger 403 (forbidden)
+    Route::get('/error/403', function () {
+        abort(403, 'Testing 403');
+    })->name('test.error.403');
+
+    // Trigger 401 (unauthorized)
+    Route::get('/error/401', function () {
+        abort(401, 'Testing 401');
+    })->name('test.error.401');
+
+    // Trigger 419 (CSRF token mismatch) — langsung lempar exception
+    Route::match(['GET', 'POST'], '/error/419', function () {
+        throw new \Illuminate\Session\TokenMismatchException('Testing 419');
+    })->name('test.error.419');
+
+    // Trigger 422 (validation error)
+    Route::post('/error/422', function () {
+        request()->validate([
+            'email' => ['required', 'email'], // sengaja gak dikirim biar 422
+        ]);
+        return 'ok';
+    })->name('test.error.422');
+
+    // Trigger 429 (too many requests)
+    Route::get('/error/429', function () {
+        throw new ThrottleRequestsException('Testing 429');
+    })->name('test.error.429');
+
+    // Trigger 500 (unhandled exception)
+    Route::get('/error/500', function () {
+        throw new \Exception('Testing 500');
+    })->name('test.error.500');
+
+    // Trigger 503 (maintenance) — best practice pakai artisan down
+    Route::get('/error/503', function () {
+        abort(503, 'Testing 503');
+    })->name('test.error.503');
 });
 
 Route::get('/test-reset-mail', function () {

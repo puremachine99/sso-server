@@ -3,40 +3,82 @@
 namespace App\Observers;
 
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Throwable;
 
 class UserObserver
 {
     /**
-     * Handle the User "created" event.
+     * Pre-commit: tulis ke HCPM dulu. Kalau gagal -> lempar error -> portal rollback.
      */
-    public function created(User $user): void
+    public function updating(User $user): void
     {
-        //
+        // field yang relevan di portal: name, email, password
+        $dirty = [];
+        foreach (['name', 'email', 'password'] as $f) {
+            if ($user->isDirty($f)) $dirty[$f] = true;
+        }
+        if (empty($dirty)) return;
+
+        $originalEmail = $user->getOriginal('email'); // locator HCPM
+        $targetEmail   = $user->email;
+
+        // siapkan update untuk HCPM (username TIDAK diubah)
+        $update = ['updated_at' => now()];
+        if (!empty($dirty['name']))     $update['name']     = $user->name;
+        if (!empty($dirty['email']))    $update['email']    = $targetEmail;   // boleh null di HCPM
+        if (!empty($dirty['password'])) $update['password'] = $user->password; // sudah hashed
+
+        // Jika email berubah & tidak null, cek unik di HCPM
+        if (!empty($dirty['email']) && $targetEmail !== null && $originalEmail !== $targetEmail) {
+            $existsCore = DB::connection('hcpm')->table('users')
+                ->whereNotNull('email')
+                ->where('email', $targetEmail)
+                ->exists();
+            if ($existsCore) {
+                throw new \InvalidArgumentException('Email sudah dipakai di database core (HCPM).');
+            }
+        }
+
+        $core = DB::connection('hcpm');
+        $core->beginTransaction();
+
+        try {
+            // Locator pakai email lama; jika email lama null, fallback ke locator lain sesuai kebutuhan
+            $query = $core->table('users');
+            if ($originalEmail !== null) {
+                $query->where('email', $originalEmail);
+            } else {
+                // fallback: kalau email lama null, jangan ambil risiko — hentikan
+                throw new \RuntimeException('Tidak bisa menyocokkan user di HCPM karena email lama NULL.');
+            }
+
+            $affected = $query->update($update);
+
+            if ($affected === 0) {
+                throw new \RuntimeException('User tidak ditemukan di HCPM berdasarkan email lama.');
+            }
+
+            $core->commit();
+        } catch (Throwable $e) {
+            if ($core->transactionLevel() > 0) $core->rollBack();
+            throw $e; // batalkan simpan di portal
+        } finally {
+            $core->disconnect();
+        }
     }
 
     /**
-     * Handle the User "updated" event.
+     * Post-commit portal: aman untuk logging.
      */
     public function updated(User $user): void
     {
-        // Sinkronisasi password ke HCPM jika berubah
-        if ($user->wasChanged('password')) {
-            DB::connection('hcpm')->table('users')
-                ->where('email', $user->email)
-                ->update([
-                    'password' => $user->password,
-                    'updated_at' => now(),
-                ]);
-        }
-
-        // Catat activity perubahan profil / password
         try {
             $changed = array_keys($user->getChanges());
-            // Jangan bocorkan nilai, cukup field apa yang berubah
             $flags = [
-                'name' => in_array('name', $changed, true),
-                'email' => in_array('email', $changed, true),
+                'name'     => in_array('name', $changed, true),
+                'email'    => in_array('email', $changed, true),
                 'password' => in_array('password', $changed, true),
             ];
 
@@ -47,37 +89,13 @@ class UserObserver
                     $user,
                     [
                         'fields' => array_keys(array_filter($flags)),
-                        'updated_by' => optional(auth()->user())->id,
+                        'updated_by' => optional(Auth::user())->id,
                     ],
-                    auth()->user()
+                    Auth::user()
                 );
             }
         } catch (\Throwable $e) {
             // jangan ganggu flow utama
         }
-    }
-
-    /**
-     * Handle the User "deleted" event.
-     */
-    public function deleted(User $user): void
-    {
-        //
-    }
-
-    /**
-     * Handle the User "restored" event.
-     */
-    public function restored(User $user): void
-    {
-        //
-    }
-
-    /**
-     * Handle the User "force deleted" event.
-     */
-    public function forceDeleted(User $user): void
-    {
-        //
     }
 }

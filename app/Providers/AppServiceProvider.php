@@ -3,9 +3,10 @@
 namespace App\Providers;
 
 use App\Models\User;
+use Laravel\Passport\Passport;
 use App\Observers\UserObserver;
 use Illuminate\Support\ServiceProvider;
-use Laravel\Passport\Passport;
+use Illuminate\Validation\Rules\Password;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -38,8 +39,12 @@ class AppServiceProvider extends ServiceProvider
         Passport::refreshTokensExpireIn(now()->addDays(30));
         Passport::personalAccessTokensExpireIn(now()->addMonths(6));
 
-        // Jika kamu TIDAK pakai route bawaan Passport, lewati ini.
-        // Kalau butuh, enable di AuthServiceProvider: Passport::routes();
-        // (di Laravel 12, ini tetap valid kalau kamu ingin publish route bawaan)
+        Password::defaults(function () {
+            return Password::min(8)
+                ->mixedCase()   // A-Z dan a-z
+                ->numbers()     // 0-9
+                ->symbols();    // simbol
+            // ->uncompromised(); // aktifkan kalau mau cek breach database
+        });
     }
 }

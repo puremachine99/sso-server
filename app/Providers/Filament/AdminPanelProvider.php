@@ -82,20 +82,16 @@ class AdminPanelProvider extends PanelProvider
                     ->setIcon('heroicon-o-user')
                     ->setSort(10)
                     ->shouldRegisterNavigation(true)
-                    ->shouldShowEditProfileForm(
-                        auth()->check() && auth()->user()?->source && strtolower(auth()->user()->source) === 'manual'
-                    )
-                    
-                    ->shouldShowEmailForm(false)
-                    ->shouldShowDeleteAccountForm(false)
-                    ->shouldShowSanctumTokens(true)
-                    ->shouldShowBrowserSessionsForm(true)
-                    ->shouldShowAvatarForm(
-                        false,
-                        directory: 'avatars',
-                        rules: 'mimes:jpeg,png|max:1024'
-                    ),
 
+                    // === tampilkan SEMUA blok bawaan yang kamu mau ===
+                    ->shouldShowEditProfileForm(true)   // Form "Profile" (name + email)
+                    ->shouldShowEmailForm(true)         // kalau versi plugin-mu memisahkan email
+                    ->shouldShowBrowserSessionsForm(true)
+                    ->shouldShowSanctumTokens(true)
+                    ->shouldShowAvatarForm(false, directory: 'avatars', rules: 'mimes:jpeg,png|max:1024')
+                    ->shouldShowDeleteAccountForm(false)
+
+                // ->customProfileComponents([])  // override komponen profile error cuk
             ])
             ->authMiddleware([
                 Authenticate::class,
