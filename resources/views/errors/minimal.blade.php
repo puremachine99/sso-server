@@ -32,7 +32,7 @@
             font-family:'Inter',system-ui,sans-serif;
             -webkit-font-smoothing:antialiased;
             -moz-osx-font-smoothing:grayscale;
-            background-color:oklch(21% 0.034 264.665);
+            background-color: #1a1a1d;
             min-height:100vh;
             margin:0;
             display:flex;
