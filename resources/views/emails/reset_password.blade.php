@@ -102,7 +102,7 @@
     <div class="wrapper">
         <div class="container">
             <div class="logo">
-                    <img src="{{ asset('images/artboard-2.png') }}" alt="SmartID" style="max-height:36px;">
+                    <img src="{{ asset('images/artboard-2.png') }}" alt="SmartID" style="max-height:100px;">
             </div>
 
             <h1><strong>Permintaan Reset Password Akun SmartID</strong></h1>
