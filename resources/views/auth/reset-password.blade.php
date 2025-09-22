@@ -98,7 +98,7 @@
                 <div class="space-y-2">
                     <label for="password" class="block text-sm font-medium text-gray-600">Password Baru</label>
                     <div class="relative">
-                        <input id="password" type="password" name="password" required
+                        <input id="password" type="password" name="password" required minlength="8"
                             class="pl-10 w-full px-4 py-3 rounded-xl input-focus transition-all placeholder-gray-400 text-gray-700"
                             placeholder="••••••••">
                         <button type="button" id="togglePassword"
@@ -113,9 +113,10 @@
                             </svg>
                         </button>
                     </div>
-                    <p class="mt-1 text-xs text-gray-500">
-                        Minimal 8 karakter, gunakan huruf besar & kecil, angka, dan simbol.
-                    </p>
+                    @error('password')
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                    @enderror
+
 
                 </div>
 

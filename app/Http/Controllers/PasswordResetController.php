@@ -11,7 +11,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use Illuminate\Validation\Rules\Password;
+use Illuminate\Validation\Rules\Password as PasswordRule;
+
 
 class PasswordResetController extends Controller
 {
@@ -104,9 +105,13 @@ class PasswordResetController extends Controller
     public function resetPassword(Request $request)
     {
         $request->validate([
-            'token'    => 'required',
-            'email'    => 'required|email',
-            'password' => 'required|confirmed|min:8',
+            'token'    => ['required'],
+            'email'    => ['required', 'email'],
+            'password' => [
+                'required',
+                'confirmed',
+                PasswordRule::min(8)->mixedCase()->numbers()->symbols(),
+            ],
         ]);
 
         // Validasi ulang token (single-use + expiry + hash match)
