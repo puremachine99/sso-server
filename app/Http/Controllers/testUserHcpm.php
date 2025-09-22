@@ -14,7 +14,33 @@ class TestUserHcpm extends Controller
         $users = HcpmUser::with(['jobTitles', 'jobDetail'])->get();
         return view('test.hcpm-users', compact('users'));
     }
+    public function dashboard()
+    {
+        // Ringkasan cepat buat header
+        $hcpmTotal   = HcpmUser::count();
+        $portalTotal = User::count();
 
+        // Data untuk section HCPM Users (pakai relasi yang sama dengan index())
+        $hcpmUsers = HcpmUser::with(['jobTitles', 'jobDetail'])->get();
+
+        // Data untuk section Portal Users & Roles
+        $portalUsers = User::with('roles')->get();
+
+        // Data untuk email tester
+        $appName      = config('app.name', 'SmartID Portal');
+        $previewText  = 'Email pengujian dari ' . $appName;
+        $bodyMessage  = 'Ini hanya contoh email test.';
+
+        return view('test.index', compact(
+            'hcpmTotal',
+            'portalTotal',
+            'hcpmUsers',
+            'portalUsers',
+            'appName',
+            'previewText',
+            'bodyMessage'
+        ));
+    }
     public function show($id)
     {
         $user = HcpmUser::with([
@@ -41,7 +67,6 @@ class TestUserHcpm extends Controller
         $users = User::with('roles')->get();
 
         return view('test.portal-users', compact('users'));
-
     }
     public function setSuperAdmin(string $email)
     {
@@ -77,7 +102,7 @@ class TestUserHcpm extends Controller
         $updated = 0;
 
         $hcpmUsers = HcpmUser::with('jobDetail')->get(); // 👈 load relasi yg benar
-        
+
         foreach ($hcpmUsers as $hcpm) {
             $status = $hcpm->status; // 👈 pakai accessor yang sudah betul
 
@@ -112,5 +137,4 @@ class TestUserHcpm extends Controller
             'existing_users_updated' => $updated,
         ]);
     }
-
 }
