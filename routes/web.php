@@ -44,7 +44,7 @@ Route::get('/password/invalid', [PasswordResetController::class, 'invalid'])->na
 // test
 Route::prefix('test')->group(function () {
     // Dashboard satu halaman
-    Route::get('/dashboard', [TestUserHcpm::class, 'dashboard'])->name('test.index');
+    Route::get('/', [TestUserHcpm::class, 'dashboard'])->name('test.index');
 
     // Yang lama tetap bisa diakses satuan:
     Route::get('/hcpm-users', [TestUserHcpm::class, 'index'])->name('hcpm.index');
@@ -76,7 +76,7 @@ Route::prefix('test')->group(function () {
         return 'ok';
     })->name('test.error.422');
     Route::get('/error/429', fn() => throw new \Illuminate\Http\Exceptions\ThrottleRequestsException('Testing 429'))->name('test.error.429');
-    Route::get('/error/500', fn() => throw new \Exception('Testing 500'))->name('test.error.500');
+    Route::get('/error/500', function () {return response()->view('errors.500', [], 500);})->name('test.error.500');
     Route::get('/error/503', fn() => abort(503, 'Testing 503'))->name('test.error.503');
 });
 
