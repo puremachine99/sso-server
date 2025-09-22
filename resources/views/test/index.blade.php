@@ -53,33 +53,7 @@
             </div>
         </header>
 
-        {{-- Quick actions --}}
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <a href="{{ route('test.hcpm.sync') }}" class="card hover:shadow-md">
-                <div class="card-body">
-                    <div class="font-semibold">Sync HCPM ➜ Portal</div>
-                    <div class="text-sm text-gray-500">Buat/Update user portal dari master HCPM</div>
-                </div>
-            </a>
-            <a href="{{ route('test.errors') }}" class="card hover:shadow-md">
-                <div class="card-body">
-                    <div class="font-semibold">Error Pages Playground</div>
-                    <div class="text-sm text-gray-500">Trigger 401/403/404/419/422/429/500/503</div>
-                </div>
-            </a>
-            <a href="{{ url('/test-imgproxy') }}" class="card hover:shadow-md">
-                <div class="card-body">
-                    <div class="font-semibold">Test Imgproxy</div>
-                    <div class="text-sm text-gray-500">Cek URL transform</div>
-                </div>
-            </a>
-            <a href="{{ url('/test-reset-mail?to=you@example.com&name=Tester') }}" class="card hover:shadow-md">
-                <div class="card-body">
-                    <div class="font-semibold">Kirim Email Reset (dummy)</div>
-                    <div class="text-sm text-gray-500">Edit query ?to=&name= untuk test</div>
-                </div>
-            </a>
-        </div>
+
 
         {{-- SECTION: HCPM Users (table lengkap kamu sebelumnya) --}}
         <details open class="card">
