@@ -9,66 +9,97 @@ use App\Mail\ResetPasswordMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use Carbon\Carbon;
 
 class PasswordResetController extends Controller
 {
-    // Form input email
+    // === STEP 1: Form input email ===
     public function requestForm()
     {
         return view('auth.forgot-password');
     }
 
-    // Kirim link reset ke email
+    // === STEP 2: Kirim link reset ke email (selalu balas netral) ===
     public function sendResetLink(Request $request)
     {
         $request->validate(['email' => 'required|email']);
 
         $user = HcpmUser::where('email', $request->email)->first();
 
-        // Selalu balas netral (anti user-enumeration)
-        $genericMessage = __('Jika email terdaftar, tautan reset password telah dikirim.');
+        // Balasan netral (anti user-enumeration)
+        $genericMessage = __('Jika email terdaftar, tautan reset password sudah kami kirim ke email Anda. Silakan cek kotak masuk atau folder spam.');
 
         if (! $user) {
             return back()->with('status', $genericMessage);
         }
 
-        // generate token raw
+        // Generate token satu kali pakai
         $rawToken = Str::random(64);
-        $hash = hash('sha256', $rawToken);
+        $hash     = hash('sha256', $rawToken);
 
         PasswordResetHcpm::create([
             'email'      => $user->email,
             'token_hash' => $hash,
-            'expires_at' => Carbon::now()->addMinutes(60),
+            'expires_at' => now()->addMinutes(60),
         ]);
 
-        // Buat URL reset
+        // URL reset (token raw + email)
         $resetUrl = route('password.reset', [
             'token' => $rawToken,
             'email' => $user->email,
         ]);
 
-        // Kirim email
-        Mail::to($user->email)->send(
-            new ResetPasswordMail($resetUrl, $user->name ?? null, 60)
-        );
+        // Kirim email (log error bila gagal, tapi balasan tetap netral)
+        try {
+            Mail::to($user->email)->send(
+                new ResetPasswordMail($resetUrl, $user->name ?? null, 60)
+            );
+        } catch (\Throwable $e) {
+            Log::error('Reset mail failed: ' . $e->getMessage(), ['email' => $user->email]);
+            // Tetap balas netral ke user
+        }
+
 
         return back()->with('status', $genericMessage);
     }
 
-    // Tampilkan form reset
-    public function showResetForm(Request $request, $token)
+    // === Helper: ambil record token yang MASIH valid (belum used & belum expired & hash cocok) ===
+    protected function getValidResetRecord(string $email, string $rawToken): ?PasswordResetHcpm
     {
-        $email = $request->query('email'); // ambil dari query string
+        $record = PasswordResetHcpm::where('email', $email)
+            ->where('used', false)
+            ->latest() // ambil token terbaru untuk email tsb
+            ->first();
+
+        if (! $record) {
+            return null;
+        }
+
+        $match      = hash_equals($record->token_hash, hash('sha256', $rawToken));
+        $notExpired = now()->lessThanOrEqualTo($record->expires_at);
+
+        return ($match && $notExpired) ? $record : null;
+    }
+
+    // === STEP 3: Tampilkan form reset - HANYA jika token valid ===
+    public function showResetForm(Request $request, string $token)
+    {
+        $email = (string) $request->query('email');
+
+        // Cek validitas token saat pertama kali diakses
+        $record = ($email !== '') ? $this->getValidResetRecord($email, $token) : null;
+        if (! $record) {
+            return redirect()->route('password.invalid');
+        }
+
         return view('auth.reset-password', [
             'token' => $token,
             'email' => $email,
         ]);
     }
 
-    // Proses reset password
+    // === STEP 4: Proses reset password - validasi token lagi (server-side) ===
     public function resetPassword(Request $request)
     {
         $request->validate([
@@ -77,49 +108,38 @@ class PasswordResetController extends Controller
             'password' => 'required|confirmed|min:8',
         ]);
 
-        $record = PasswordResetHcpm::where('email', $request->email)
-            ->where('used', false)
-            ->latest()
-            ->first();
-
+        // Validasi ulang token (single-use + expiry + hash match)
+        $record = $this->getValidResetRecord($request->email, $request->token);
         if (! $record) {
-            return back()->withErrors([
-                'email' => __('Token tidak valid atau sudah digunakan.'),
-            ]);
+            return redirect()->route('password.invalid');
         }
 
-        $isValid = hash_equals(
-            $record->token_hash,
-            hash('sha256', $request->token)
-        );
-
-        if (! $isValid || now()->greaterThan($record->expires_at)) {
-            return back()->withErrors([
-                'email' => __('Token tidak valid atau sudah kedaluwarsa.'),
-            ]);
-        }
-
-        // hash password baru
         $hashedPassword = Hash::make($request->password);
 
-        // update password user di DB HCPM
+        // Update password di DB HCPM
         $userHcpm = HcpmUser::where('email', $request->email)->first();
         if ($userHcpm) {
             $userHcpm->update(['password' => $hashedPassword]);
         }
 
-        // update juga password user di Portal (jika ada)
+        // Update password di Portal (jika user ada)
         $userPortal = User::where('email', $request->email)->first();
         if ($userPortal) {
             $userPortal->update(['password' => $hashedPassword]);
         }
 
-        // tandai token sudah dipakai
+        // Tandai token sudah digunakan → single-use
         $record->update(['used' => true]);
 
         return redirect()->route('login')->with(
             'status',
             __('Password berhasil direset. Silakan login dengan password baru.')
         );
+    }
+
+    // === STEP 5: Halaman invalid token ===
+    public function invalid()
+    {
+        return view('auth.reset-invalid');
     }
 }

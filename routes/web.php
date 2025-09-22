@@ -40,7 +40,7 @@ Route::get('/reset-password/{token}', [PasswordResetController::class, 'showRese
     ->name('password.reset');
 Route::post('/reset-password', [PasswordResetController::class, 'resetPassword'])
     ->name('password.update');
-
+Route::get('/password/invalid', [PasswordResetController::class, 'invalid'])->name('password.invalid');
 // test
 Route::prefix('test')->group(function () {
     Route::get('/hcpm-users', [TestUserHcpm::class, 'index'])->name('hcpm.index');

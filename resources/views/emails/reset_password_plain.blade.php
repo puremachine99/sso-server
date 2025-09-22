@@ -1,13 +1,16 @@
-Reset password akun SmartID Portal
+Permintaan Reset Password Akun SmartID
 
-Halo{{ isset($userName) && $userName ? ' '.$userName : '' }},
+Halo{{ isset($userName) && $userName ? ' ' . $userName : '' }},
 
-Kami menerima permintaan untuk mereset password akun kamu.
-Buka link berikut untuk membuat password baru (berlaku {{ $expiryMinutes ?? 60 }} menit):
+Kami menerima permintaan untuk mengatur ulang password akun SmartID Anda.
+Jika benar Anda yang meminta, silakan buka tautan berikut untuk membuat kata sandi baru (berlaku
+{{ $expiryMinutes ?? 60 }} menit dan hanya bisa digunakan sekali):
 
 {{ $resetUrl }}
 
-Jika kamu tidak meminta reset password, abaikan email ini.
-Bantuan: support@smartid.or.id
+Jika Anda tidak merasa meminta reset password, silakan segera hubungi ai.it@smartid.co.id
 
-© {{ date('Y') }} SmartID Portal - https://devportal.smartid.or.id
+Terima Kasih,
+Department Technology and AI SmartID
+
+© 2025 SmartID
