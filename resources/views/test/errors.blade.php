@@ -46,7 +46,7 @@
         <a href="{{ route('test.error.401') }}" target="_blank">Trigger 401</a>
         <a href="{{ route('test.error.419') }}" target="_blank">Trigger 419</a>
         <a href="{{ route('test.error.429') }}" target="_blank">Trigger 429</a>
-        <a href="{{ route('test.error.500') }}" target="_blank">Trigger 500</a>
+        <a href="{{ route('test.error.500') }}" target="_blank">Trigger 500 (hoki2an, soale sulit simulasi error e )</a>
         <a href="{{ route('test.error.503') }}" target="_blank">Trigger 503</a>
     </div>
 

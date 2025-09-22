@@ -113,6 +113,10 @@
                             </svg>
                         </button>
                     </div>
+                    <p class="mt-1 text-xs text-gray-500">
+                        Minimal 8 karakter, gunakan huruf besar & kecil, angka, dan simbol.
+                    </p>
+
                 </div>
 
                 <div class="space-y-2">
