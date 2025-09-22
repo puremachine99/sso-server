@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\User;
 use Laravel\Passport\Passport;
 use App\Observers\UserObserver;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
 
@@ -46,5 +47,6 @@ class AppServiceProvider extends ServiceProvider
                 ->symbols();    // simbol
             // ->uncompromised(); // aktifkan kalau mau cek breach database
         });
+        View::addNamespace('errors', resource_path('views/errors'));
     }
 }
