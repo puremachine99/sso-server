@@ -56,7 +56,7 @@ Route::prefix('test')->group(function () {
 
     // imgproxy tester
     Route::get('/test-imgproxy', function () {
-        $path = 'images/bg-login.jpg';
+        $path = 'images/bg-error.jpg';
         $url = imgproxy($path, '100x200,sc');
         return response()->json([
             'original' => config('services.imgproxy.base_asset_url') . '/' . ltrim($path, '/'),
